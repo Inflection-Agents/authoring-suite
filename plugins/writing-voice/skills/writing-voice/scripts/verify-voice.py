@@ -42,7 +42,8 @@ BANNED_ANYWHERE = [
     "intricate interplay", "vibrant", "holistic", "bolster", "foster", "harness", "unpack",
     "shed light on", "pave the way", "underscore", "multifaceted", "it cannot be overstated",
     "it is worth mentioning", "it should be considered", "when it comes to", "at its core",
-    "at the end of the day", "this is where", "not only",
+    "at the end of the day", "this is where", "not only", "forge",
+    "i have to be straight with you", "the honest state",
 ]
 
 # Phrases banned only as a sentence/paragraph opener.
@@ -99,8 +100,12 @@ def split_sections(text: str) -> list[tuple[int, str]]:
 
 def _phrase_re(phrase: str) -> re.Pattern:
     # \s+ between words, not a literal space, so a phrase that happens to wrap across a
-    # line break in hand-wrapped markdown still matches.
-    return re.compile(r"\s+".join(re.escape(w) for w in phrase.split()), re.IGNORECASE)
+    # line break in hand-wrapped markdown still matches. Boundaries are lookarounds that
+    # treat a hyphen as part of the word, not a plain \b: \b alone sits happily right after
+    # a hyphen, so "spine" would still match inside "narrative-spine" or "spine-check.mjs"
+    # otherwise (same bug class as diagram-design's verify-grid.py stroke-width/width fix).
+    body = r"\s+".join(re.escape(w) for w in phrase.split())
+    return re.compile(rf"(?<![\w-]){body}(?![\w-])", re.IGNORECASE)
 
 
 def check_banned_words(text: str) -> list[str]:

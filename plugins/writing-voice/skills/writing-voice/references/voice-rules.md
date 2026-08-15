@@ -27,7 +27,12 @@ Also never use: `groundbreaking`, `cutting-edge`, `transformative`, `innovative`
 light on`, `pave the way`, `underscore` (as a verb), `multifaceted`, `it cannot be overstated`,
 `it is worth mentioning`, `it should be considered`, `in today's [fast-paced/rapidly
 evolving/digital] world`, `one of the most [important/significant/crucial]`, `when it comes
-to`, `at its core`, `at the end of the day`, `this is where X comes in`, `not only X, but Y`.
+to`, `at its core`, `at the end of the day`, `this is where X comes in`, `not only X, but Y`,
+`forge` (as in "forge a path" / "forge ahead").
+
+**Self-announced candor, banned outright:** `I have to be straight with you`, `the honest
+state [of]`. Naming your own honesty is a tell, not a virtue; a genuinely direct sentence
+doesn't need to precede itself with a label.
 
 **Em dash: hard ban, no exceptions.** Use a period, a comma, or a colon instead.
 
