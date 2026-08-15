@@ -37,8 +37,12 @@ def load_json(path: Path, errors: list[str]) -> dict[str, Any] | None:
 
 
 def load_base_json(root: Path, base_ref: str, relative: Path, errors: list[str]) -> dict[str, Any] | None:
+    # git's `rev:path` syntax resolves a bare path against the repo root, not cwd; only a
+    # "./"-prefixed path is read relative to cwd. Without the prefix this silently looked up
+    # the wrong file the moment `root` stopped being the repo root (i.e. once this plugin was
+    # nested inside a larger repo instead of being the repo root itself).
     result = subprocess.run(
-        ["git", "show", f"{base_ref}:{relative.as_posix()}"],
+        ["git", "show", f"{base_ref}:./{relative.as_posix()}"],
         cwd=root,
         check=False,
         capture_output=True,
