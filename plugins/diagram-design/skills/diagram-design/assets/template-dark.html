@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagram</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dd-paper: #0F1A26;
+      --dd-paper-2: #1B2B3C;
+      --dd-node-white: #ffffff;
+      --dd-ink: #F5F2EC;
+      --dd-muted: #C8C4BB;
+      --dd-soft: #A8BFCC;
+      --dd-rule: rgba(245,242,236,0.14);
+      --dd-rule-solid: rgba(200,196,187,0.25);
+      --dd-accent: #D4B97A;
+      --dd-accent-tint: rgba(212,185,122,0.10);
+      --dd-link: #8FB0DC;
+      --dd-series-1: #C8B483;
+      --dd-series-2: #86949F;
+      --dd-series-3: #A5C6AF;
+      --dd-series-4: #D5A483;
+      --dd-series-5: #9B90AD;
+      --dd-wash-2: rgba(245,242,236,0.02);
+      --dd-wash-3: rgba(245,242,236,0.03);
+      --dd-wash-5: rgba(245,242,236,0.05);
+      --dd-wash-10: rgba(200,196,187,0.10);
+      --dd-wash-20: rgba(245,242,236,0.20);
+      --dd-wash-30: rgba(245,242,236,0.30);
+      --dd-radius-node: 2px;
+      --dd-radius-tag: 2px;
+      --dd-radius-container: 4px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--dd-paper);
+      color: var(--dd-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+
+    .frame { max-width: 1200px; width: 100%; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dd-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--dd-ink);
+      margin-bottom: 1.5rem;
+    }
+
+    svg { width: 100%; min-width: 900px; display: block; }
+
+    /* Radius rides the token; the literal rx attribute stays as a Safari fallback. */
+    .dd-node      { rx: var(--dd-radius-node); }
+    .dd-tag       { rx: var(--dd-radius-tag); }
+    .dd-container { rx: var(--dd-radius-container); }
+  </style>
+  <!-- Optional: part of a multi-diagram set? Uncomment and fill in — see
+       references/diagram-sets.md. Omit entirely for a standalone diagram.
+  <meta name="diagram:id" content="[set-name].[this-diagram]">
+  <meta name="diagram:level" content="[landscape|context|container|component|code|deployment|dynamic]">
+  <meta name="diagram:parent" content="[parent-diagram-id, omit for the set's root]">
+  <meta name="diagram:subject" content="[element-id in the parent this diagram expands]">
+  <meta name="diagram:elements" content="[comma,separated,element,ids,drawn,here]">
+  -->
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">[Type] · Diagram Design</p>
+    <h1>[Diagram title]</h1>
+
+    <!-- Replace [diagram-slug] with a unique slug for this diagram before export. -->
+    <svg viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="[diagram-slug]-title [diagram-slug]-desc">
+      <title id="[diagram-slug]-title">[Diagram title]</title>
+      <desc id="[diagram-slug]-desc">[One sentence describing what the diagram shows]</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--dd-muted)"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--dd-accent)"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--dd-link)"/></marker>
+
+        <!-- OPTIONAL: dot-pattern background. Uncomment and add <rect fill="url(#dots)"/> after the paper rect to enable. -->
+        <!--
+        <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.9" fill="color-mix(in srgb, var(--dd-ink) 8%, transparent)"/>
+        </pattern>
+        -->
+      </defs>
+
+      <rect width="100%" height="100%" fill="var(--dd-paper)"/>
+
+      <!-- Draw arrows first, then nodes. Replace with your content. -->
+
+    </svg>
+  </div>
+</body>
+</html>

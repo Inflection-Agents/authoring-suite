@@ -1,0 +1,301 @@
+name: diagram-design CI
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'plugins/diagram-design/**', '.github/workflows/diagram-design-ci.yml' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'plugins/diagram-design/**', '.github/workflows/diagram-design-ci.yml' ]
+
+permissions:
+  contents: read
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: "1"
+
+defaults:
+  run:
+    working-directory: plugins/diagram-design
+
+jobs:
+  plugin-package:
+    name: Plugin Package & Version Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository history
+        uses: actions/checkout@v4
+        env:
+          GIT_CONFIG_COUNT: "1"
+          GIT_CONFIG_KEY_0: "core.autocrlf"
+          GIT_CONFIG_VALUE_0: "false"
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Test plugin package tooling
+        run: python3 scripts/test-plugin-package.py
+
+      - name: Require a synchronized plugin version bump
+        env:
+          BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python3 scripts/verify-plugin-package.py "$BASE_REF"
+
+      - name: Validate Claude marketplace package without warnings
+        run: npx --yes @anthropic-ai/claude-code@2.1.229 plugin validate . --strict
+
+  validate:
+    name: Lint & Verify (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.11", "3.12"]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        env:
+          GIT_CONFIG_COUNT: "1"
+          GIT_CONFIG_KEY_0: "core.autocrlf"
+          GIT_CONFIG_VALUE_0: "false"
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Verify accessible SVG contract
+        if: always()
+        id: a11y
+        run: python scripts/test-lint-a11y.py
+
+      - name: Verify semantic pattern documentation
+        if: always()
+        id: semantic_docs
+        run: python scripts/verify-semantic-motion.py --markdown-only
+
+      - name: Verify animated example structure
+        if: always()
+        id: animated_example
+        run: python scripts/verify-semantic-motion.py --example-only
+
+      - name: Lint animated example skin
+        if: always()
+        id: animated_lint
+        run: python scripts/lint-skin.py skills/diagram-design/assets/example-policy-trace-animated.html
+
+      - name: Verify every shipped motion file
+        if: always()
+        id: shipped_motion
+        run: python scripts/verify-motion.py --shipped
+
+      - name: Verify URL SVG normalization
+        if: always()
+        id: url_icons
+        run: python scripts/test-build-icons-quoted-attributes.py
+
+      - name: Verify Devicon normalization
+        if: always()
+        id: devicon
+        run: python scripts/test-build-icons-devicon.py
+
+      - name: Verify mojibake repair utility
+        if: always()
+        id: mojibake
+        run: python scripts/test-fix-mojibake.py
+
+      - name: Run skin linter
+        if: always()
+        id: skin
+        run: python scripts/lint-skin.py --all --baseline
+
+      - name: Verify sequence OAuth specs
+        if: always()
+        id: oauth
+        run: python scripts/verify-sequence-oauth.py
+
+      - name: Verify draw.io import script
+        if: always()
+        id: drawio
+        run: python scripts/verify-drawio-import.py
+
+      - name: Verify Mermaid import script
+        if: always()
+        id: mermaid
+        run: python scripts/verify-mermaid-import.py
+
+      - name: Verify optional motion contract
+        if: always()
+        id: motion
+        run: python scripts/test-verify-motion.py
+
+      - name: Verify docs and routing sync
+        if: always()
+        id: docs_sync
+        run: python scripts/verify-docs-sync.py
+
+      - name: Verify packaged self-check
+        if: always()
+        id: self_check
+        run: python scripts/test-self-check.py
+
+      - name: Verify label geometry
+        if: always()
+        id: geometry
+        run: python scripts/verify-geometry.py --all
+
+      - name: Verify label geometry checker
+        if: always()
+        id: geometry_tests
+        run: python scripts/test-verify-geometry.py
+
+      - name: Verify skin generation
+        if: always()
+        id: skin_build
+        run: python scripts/test-build-skins.py
+
+      - name: Verify hex-to-token codemod
+        if: always()
+        id: codemod
+        run: python scripts/test-migrate-to-tokens.py
+
+      - name: Skins are up to date
+        if: always()
+        id: skins
+        shell: bash
+        run: |
+          python scripts/build-skins.py
+          git diff --ignore-space-at-eol --exit-code -- \
+            skills/diagram-design/assets/skins/
+
+      - name: Verify generated icon assets
+        if: always()
+        id: icons
+        shell: bash
+        run: |
+          python scripts/build-icons.py
+          git diff --ignore-space-at-eol --exit-code -- \
+            skills/diagram-design/assets/icons.html \
+            skills/diagram-design/references/primitive-icons.md
+
+      - name: Verify no diagonal connectors between off-axis nodes
+        if: always()
+        id: no_diagonal
+        run: python scripts/verify-no-diagonal.py --all
+
+      - name: Verify diagonal-connector checker
+        if: always()
+        id: no_diagonal_tests
+        run: python scripts/test-verify-no-diagonal.py
+
+      - name: Verify mandatory type-tag consistency
+        if: always()
+        id: tag_consistency
+        run: python scripts/verify-tag-consistency.py --all
+
+      - name: Verify tag-consistency checker
+        if: always()
+        id: tag_consistency_tests
+        run: python scripts/test-verify-tag-consistency.py
+
+      - name: Verify compartment lines never transcribe a field type
+        if: always()
+        id: no_transcription
+        run: python scripts/verify-no-transcription.py --all
+
+      - name: Verify transcription checker
+        if: always()
+        id: no_transcription_tests
+        run: python scripts/test-verify-no-transcription.py
+
+      - name: Verify structural 4px grid (grandfathered)
+        if: always()
+        id: grid
+        run: python scripts/verify-grid.py --all --baseline
+
+      - name: Verify grid checker
+        if: always()
+        id: grid_tests
+        run: python scripts/test-verify-grid.py
+
+      - name: Verify accent budget (grandfathered)
+        if: always()
+        id: accent_budget
+        run: python scripts/verify-accent-budget.py --all --baseline
+
+      - name: Verify accent-budget checker
+        if: always()
+        id: accent_budget_tests
+        run: python scripts/test-verify-accent-budget.py
+
+      - name: Diagram-set spine is up to date and referentially sound
+        if: always()
+        id: diagram_set
+        shell: bash
+        run: |
+          python scripts/verify-set.py --all
+          git diff --ignore-space-at-eol --exit-code -- docs/diagram-map.md
+
+      - name: Verify diagram-set checker
+        if: always()
+        id: diagram_set_tests
+        run: python scripts/test-verify-set.py
+
+      - name: Generate CI execution summary table
+        if: always()
+        shell: bash
+        run: |
+          echo "### 📊 CI Verification Summary (${{ matrix.os }}, Python ${{ matrix.python-version }})" >> $GITHUB_STEP_SUMMARY
+          echo "| Verification Gate | Outcome |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| SVG Accessibility Contract | ${{ steps.a11y.outcome == 'success' && '✅ Passed' || (steps.a11y.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Semantic Pattern Documentation | ${{ steps.semantic_docs.outcome == 'success' && '✅ Passed' || (steps.semantic_docs.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Animated Example Structure | ${{ steps.animated_example.outcome == 'success' && '✅ Passed' || (steps.animated_example.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Animated Example Skin | ${{ steps.animated_lint.outcome == 'success' && '✅ Passed' || (steps.animated_lint.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Shipped Motion HTML | ${{ steps.shipped_motion.outcome == 'success' && '✅ Passed' || (steps.shipped_motion.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| URL SVG Normalization | ${{ steps.url_icons.outcome == 'success' && '✅ Passed' || (steps.url_icons.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Devicon Normalization | ${{ steps.devicon.outcome == 'success' && '✅ Passed' || (steps.devicon.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Mojibake Repair Utility | ${{ steps.mojibake.outcome == 'success' && '✅ Passed' || (steps.mojibake.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Color Palette & Skin Linter | ${{ steps.skin.outcome == 'success' && '✅ Passed' || (steps.skin.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Sequence Diagram Grammar | ${{ steps.oauth.outcome == 'success' && '✅ Passed' || (steps.oauth.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Draw.io Import Extractor | ${{ steps.drawio.outcome == 'success' && '✅ Passed' || (steps.drawio.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Mermaid Import Extractor | ${{ steps.mermaid.outcome == 'success' && '✅ Passed' || (steps.mermaid.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Optional Motion Contract | ${{ steps.motion.outcome == 'success' && '✅ Passed' || (steps.motion.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Docs & Routing Sync | ${{ steps.docs_sync.outcome == 'success' && '✅ Passed' || (steps.docs_sync.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Packaged Self-Check | ${{ steps.self_check.outcome == 'success' && '✅ Passed' || (steps.self_check.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Label Geometry | ${{ steps.geometry.outcome == 'success' && '✅ Passed' || (steps.geometry.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Label Geometry Checker | ${{ steps.geometry_tests.outcome == 'success' && '✅ Passed' || (steps.geometry_tests.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Skin Generation | ${{ steps.skin_build.outcome == 'success' && '✅ Passed' || (steps.skin_build.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Hex-to-Token Codemod | ${{ steps.codemod.outcome == 'success' && '✅ Passed' || (steps.codemod.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Generated Skin Files | ${{ steps.skins.outcome == 'success' && '✅ Passed' || (steps.skins.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Primitive Icons & Documentation | ${{ steps.icons.outcome == 'success' && '✅ Passed' || (steps.icons.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| No Diagonal Connectors | ${{ steps.no_diagonal.outcome == 'success' && '✅ Passed' || (steps.no_diagonal.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Diagonal-Connector Checker | ${{ steps.no_diagonal_tests.outcome == 'success' && '✅ Passed' || (steps.no_diagonal_tests.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tag Consistency | ${{ steps.tag_consistency.outcome == 'success' && '✅ Passed' || (steps.tag_consistency.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tag-Consistency Checker | ${{ steps.tag_consistency_tests.outcome == 'success' && '✅ Passed' || (steps.tag_consistency_tests.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| No Transcription (Compartment Lines) | ${{ steps.no_transcription.outcome == 'success' && '✅ Passed' || (steps.no_transcription.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Transcription Checker | ${{ steps.no_transcription_tests.outcome == 'success' && '✅ Passed' || (steps.no_transcription_tests.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Structural 4px Grid (grandfathered) | ${{ steps.grid.outcome == 'success' && '✅ Passed' || (steps.grid.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Grid Checker | ${{ steps.grid_tests.outcome == 'success' && '✅ Passed' || (steps.grid_tests.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Accent Budget (grandfathered) | ${{ steps.accent_budget.outcome == 'success' && '✅ Passed' || (steps.accent_budget.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Accent-Budget Checker | ${{ steps.accent_budget_tests.outcome == 'success' && '✅ Passed' || (steps.accent_budget_tests.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Diagram-Set Spine | ${{ steps.diagram_set.outcome == 'success' && '✅ Passed' || (steps.diagram_set.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Diagram-Set Checker | ${{ steps.diagram_set_tests.outcome == 'success' && '✅ Passed' || (steps.diagram_set_tests.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY

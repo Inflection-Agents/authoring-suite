@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagram pipeline · Class structure (dark)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dd-paper: #0F1A26;
+      --dd-paper-2: #1B2B3C;
+      --dd-node-white: #ffffff;
+      --dd-ink: #F5F2EC;
+      --dd-muted: #C8C4BB;
+      --dd-soft: #A8BFCC;
+      --dd-rule: rgba(245,242,236,0.14);
+      --dd-rule-solid: rgba(200,196,187,0.25);
+      --dd-accent: #D4B97A;
+      --dd-accent-tint: rgba(212,185,122,0.10);
+      --dd-link: #8FB0DC;
+      --dd-series-1: #C8B483;
+      --dd-series-2: #86949F;
+      --dd-series-3: #A5C6AF;
+      --dd-series-4: #D5A483;
+      --dd-series-5: #9B90AD;
+      --dd-wash-2: rgba(245,242,236,0.02);
+      --dd-wash-3: rgba(245,242,236,0.03);
+      --dd-wash-5: rgba(245,242,236,0.05);
+      --dd-wash-10: rgba(200,196,187,0.10);
+      --dd-wash-20: rgba(245,242,236,0.20);
+      --dd-wash-30: rgba(245,242,236,0.30);
+      --dd-radius-node: 2px;
+      --dd-radius-tag: 2px;
+      --dd-radius-container: 4px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--dd-paper);
+      color: var(--dd-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+
+    .frame { max-width: 1200px; width: 100%; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dd-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--dd-ink);
+      margin-bottom: 1.5rem;
+    }
+
+    svg { width: 100%; min-width: 900px; display: block; }
+
+    /* Radius rides the token; the literal rx attribute stays as a Safari fallback. */
+    .dd-node      { rx: var(--dd-radius-node); }
+    .dd-tag       { rx: var(--dd-radius-tag); }
+    .dd-container { rx: var(--dd-radius-container); }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Code level · Diagram Design</p>
+    <h1>Diagram pipeline · class structure</h1>
+
+    <svg viewBox="0 0 1064 656" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="class-dark-title class-dark-desc">
+      <title id="class-dark-title">Diagram pipeline class structure</title>
+      <desc id="class-dark-desc">Extractor is realized by DrawioExtractor and MermaidExtractor, both producing DiagramIR, which is composed of Node and Edge. Abstract Validator is extended by GeometryValidator and SkinValidator, both depending on DiagramIR.</desc>
+      <defs>
+        <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.9" fill="color-mix(in srgb, var(--dd-ink) 10%, transparent)"/>
+        </pattern>
+        <marker id="arr-isa" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto">
+          <path d="M0 0 L9 4 L0 8 Z" fill="none" stroke="var(--dd-ink)" stroke-width="1"/>
+        </marker>
+        <marker id="arr-dep" markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto">
+          <path d="M0 0 L7 3 L0 6 Z" fill="var(--dd-muted)"/>
+        </marker>
+        <marker id="sq-has" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <rect x="0" y="0" width="8" height="8" fill="var(--dd-ink)"/>
+        </marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="var(--dd-paper)"/>
+      <rect width="100%" height="100%" fill="url(#dots)" opacity="0.55"/>
+
+      <!-- Connectors first, grouped by relation kind -->
+      <!-- is-a: realizes (dashed) -->
+      <path d="M120,192 V152 Q120,144 128,144 H172 Q180,144 180,136 V96" fill="none" stroke="var(--dd-ink)" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr-isa)"/>
+      <path d="M300,192 V152 Q300,144 292,144 H260 Q252,144 252,136 V96" fill="none" stroke="var(--dd-ink)" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr-isa)"/>
+      <!-- is-a: extends (solid) -->
+      <path d="M764,192 V152 Q764,144 772,144 H800 Q808,144 808,136 V96" fill="none" stroke="var(--dd-ink)" stroke-width="1.2" marker-end="url(#arr-isa)"/>
+      <path d="M944,192 V152 Q944,144 936,144 H888 Q880,144 880,136 V96" fill="none" stroke="var(--dd-ink)" stroke-width="1.2" marker-end="url(#arr-isa)"/>
+      <!-- depends-on: produces -->
+      <path d="M120,248 V288 Q120,296 128,296 H420 Q428,296 428,304 V344" fill="none" stroke="var(--dd-muted)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr-dep)"/>
+      <path d="M300,248 Q300,256 308,256 H472 Q480,256 480,264 V344" fill="none" stroke="var(--dd-muted)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr-dep)"/>
+      <!-- depends-on: depends on -->
+      <path d="M764,248 Q764,256 756,256 H584 Q576,256 576,264 V344" fill="none" stroke="var(--dd-muted)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr-dep)"/>
+      <path d="M944,248 V288 Q944,296 936,296 H636 Q628,296 628,304 V344" fill="none" stroke="var(--dd-muted)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr-dep)"/>
+      <!-- has-a: composition -->
+      <path d="M448,416 V456 Q448,464 440,464 H416 Q408,464 408,472 V512" fill="none" stroke="var(--dd-ink)" stroke-width="1" marker-start="url(#sq-has)"/>
+      <path d="M608,416 V456 Q608,464 616,464 H640 Q648,464 648,472 V512" fill="none" stroke="var(--dd-ink)" stroke-width="1" marker-start="url(#sq-has)"/>
+
+      <!-- Relation tokens -->
+      <rect x="116" y="136" width="64" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="148" y="144" fill="var(--dd-ink)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">REALIZES</text>
+      <rect x="244" y="136" width="64" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="276" y="144" fill="var(--dd-ink)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">REALIZES</text>
+      <rect x="752" y="136" width="64" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="784" y="144" fill="var(--dd-ink)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">EXTENDS</text>
+      <rect x="880" y="136" width="64" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="912" y="144" fill="var(--dd-ink)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">EXTENDS</text>
+      <rect x="232" y="288" width="80" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="272" y="296" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">PRODUCES</text>
+      <rect x="348" y="248" width="80" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="388" y="256" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">PRODUCES</text>
+      <rect x="628" y="248" width="88" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="672" y="256" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">DEPENDS ON</text>
+      <rect x="740" y="288" width="88" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="784" y="296" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">DEPENDS ON</text>
+      <rect x="408" y="456" width="40" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="428" y="464" fill="var(--dd-ink)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HAS</text>
+      <rect x="608" y="456" width="40" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="628" y="464" fill="var(--dd-ink)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HAS</text>
+
+      <!-- Extractor (interface) -->
+      <rect x="136" y="40" width="160" height="56" rx="6" class="dd-node" fill="var(--dd-paper-2)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="152" y="56" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">INTERFACE</text>
+      <text x="152" y="76" fill="var(--dd-ink)" font-size="13" font-weight="600" font-family="'DM Sans', sans-serif">Extractor</text>
+      <text x="152" y="88" class="dd-compartment-line" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace">parse source → IR</text>
+
+      <!-- Validator (abstract) -->
+      <rect x="768" y="40" width="160" height="56" rx="6" class="dd-node" fill="var(--dd-paper-2)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="784" y="56" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">ABSTRACT</text>
+      <text x="784" y="76" fill="var(--dd-ink)" font-size="13" font-weight="600" font-family="'DM Sans', sans-serif">Validator</text>
+      <text x="784" y="88" class="dd-compartment-line" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace">check IR · findings</text>
+
+      <!-- DrawioExtractor -->
+      <rect x="40" y="192" width="160" height="56" rx="6" class="dd-node" fill="var(--dd-paper-2)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="56" y="208" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">CLASS</text>
+      <text x="56" y="228" fill="var(--dd-ink)" font-size="13" font-weight="600" font-family="'DM Sans', sans-serif">DrawioExtractor</text>
+      <text x="56" y="240" class="dd-compartment-line" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace">reads .drawio XML</text>
+
+      <!-- MermaidExtractor -->
+      <rect x="220" y="192" width="160" height="56" rx="6" class="dd-node" fill="var(--dd-paper-2)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="236" y="208" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">CLASS</text>
+      <text x="236" y="228" fill="var(--dd-ink)" font-size="13" font-weight="600" font-family="'DM Sans', sans-serif">MermaidExtractor</text>
+      <text x="236" y="240" class="dd-compartment-line" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace">reads .mmd text</text>
+
+      <!-- GeometryValidator -->
+      <rect x="684" y="192" width="160" height="56" rx="6" class="dd-node" fill="var(--dd-paper-2)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="700" y="208" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">CLASS</text>
+      <text x="700" y="228" fill="var(--dd-ink)" font-size="13" font-weight="600" font-family="'DM Sans', sans-serif">GeometryValidator</text>
+      <text x="700" y="240" class="dd-compartment-line" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace">grid · spacing rules</text>
+
+      <!-- SkinValidator -->
+      <rect x="864" y="192" width="160" height="56" rx="6" class="dd-node" fill="var(--dd-paper-2)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="880" y="208" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">CLASS</text>
+      <text x="880" y="228" fill="var(--dd-ink)" font-size="13" font-weight="600" font-family="'DM Sans', sans-serif">SkinValidator</text>
+      <text x="880" y="240" class="dd-compartment-line" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace">token contract rules</text>
+
+      <!-- DiagramIR (focal) -->
+      <rect x="408" y="344" width="240" height="72" rx="6" class="dd-node" fill="color-mix(in srgb, var(--dd-accent) 7%, transparent)" stroke="var(--dd-accent)" stroke-width="1.6"/>
+      <text x="424" y="364" fill="var(--dd-accent)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">CLASS · FOCAL</text>
+      <text x="424" y="384" fill="var(--dd-ink)" font-size="14" font-weight="600" font-family="'DM Sans', sans-serif">DiagramIR</text>
+      <text x="424" y="400" class="dd-compartment-line" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace">the render contract</text>
+
+      <!-- Node -->
+      <rect x="328" y="512" width="160" height="56" rx="6" class="dd-node" fill="var(--dd-paper-2)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="344" y="528" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">CLASS</text>
+      <text x="344" y="548" fill="var(--dd-ink)" font-size="13" font-weight="600" font-family="'DM Sans', sans-serif">Node</text>
+      <text x="344" y="560" class="dd-compartment-line" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace">position · kind · label</text>
+
+      <!-- Edge -->
+      <rect x="568" y="512" width="160" height="56" rx="6" class="dd-node" fill="var(--dd-paper-2)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="584" y="528" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">CLASS</text>
+      <text x="584" y="548" fill="var(--dd-ink)" font-size="13" font-weight="600" font-family="'DM Sans', sans-serif">Edge</text>
+      <text x="584" y="560" class="dd-compartment-line" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace">source · target · kind</text>
+
+      <!-- Legend -->
+      <line x1="40" y1="592" x2="1024" y2="592" stroke="color-mix(in srgb, var(--dd-ink) 10%, transparent)" stroke-width="0.8"/>
+      <text x="40" y="608" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.18em">LEGEND</text>
+
+      <line x1="40" y1="628" x2="72" y2="628" stroke="var(--dd-ink)" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <text x="80" y="632" fill="var(--dd-muted)" font-size="8.5" font-family="'DM Sans', sans-serif">is-a (dashed = realizes an interface, solid = extends a class)</text>
+
+      <line x1="420" y1="628" x2="452" y2="628" stroke="var(--dd-muted)" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="460" y="632" fill="var(--dd-muted)" font-size="8.5" font-family="'DM Sans', sans-serif">depends-on (uses or produces, no ownership)</text>
+
+      <line x1="800" y1="628" x2="824" y2="628" stroke="var(--dd-ink)" stroke-width="1"/>
+      <rect x="800" y="624" width="8" height="8" fill="var(--dd-ink)"/>
+      <text x="836" y="632" fill="var(--dd-muted)" font-size="8.5" font-family="'DM Sans', sans-serif">has-a (composition)</text>
+    </svg>
+  </div>
+</body>
+</html>

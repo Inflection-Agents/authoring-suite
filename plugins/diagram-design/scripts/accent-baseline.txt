@@ -1,0 +1,29 @@
+# Grandfather baseline for scripts/verify-accent-budget.py — seeded 2026-08-14 at Phase 2c.
+#
+# Every file below exceeds the 2-accent-element budget under the corrected metric
+# (distinct nodes + distinct connector shapes, not raw hex occurrences). Most exceed
+# by exactly one distinct <path>, because a single accent-highlighted flow that bends
+# around another connector is drawn as two consecutive path elements -- one continuous
+# route to the reader, not two accent decisions. See verify-accent-budget.py's
+# docstring and the M1 decision log for the full re-measurement. This list only ever
+# shrinks.
+#
+example-data-flow-dark.html
+example-data-flow-full.html
+example-data-flow.html
+example-datalake-dark.html
+example-datalake-full.html
+example-datalake.html
+example-flowchart-dark.html
+example-flowchart-full.html
+example-flowchart.html
+example-high-level-dark.html
+example-high-level-full.html
+example-high-level-vertical-dark.html
+example-high-level-vertical-full.html
+example-high-level-vertical.html
+example-high-level.html
+example-paved-road-animated.html
+example-policy-trace-animated.html
+example-queue-animated.html
+template-full.html

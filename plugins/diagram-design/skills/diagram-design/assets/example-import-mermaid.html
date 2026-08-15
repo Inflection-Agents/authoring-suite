@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imported from Mermaid — Request validation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dd-paper: #F5F2EC;
+      --dd-paper-2: #EDE9E0;
+      --dd-node-white: #ffffff;
+      --dd-ink: #1B2B3C;
+      --dd-muted: #4A6275;
+      --dd-soft: #6E8799;
+      --dd-rule: rgba(27,43,60,0.14);
+      --dd-rule-solid: #C8C4BB;
+      --dd-accent: #967A3A;
+      --dd-accent-tint: rgba(150,122,58,0.10);
+      --dd-link: #3A5F8B;
+      --dd-series-1: #B0934B;
+      --dd-series-2: #4A6275;
+      --dd-series-3: #7AAE8E;
+      --dd-series-4: #C47A4A;
+      --dd-series-5: #6B5B8B;
+      --dd-wash-2: rgba(27,43,60,0.02);
+      --dd-wash-3: rgba(27,43,60,0.03);
+      --dd-wash-5: rgba(27,43,60,0.05);
+      --dd-wash-10: rgba(74,98,117,0.10);
+      --dd-wash-20: rgba(27,43,60,0.20);
+      --dd-wash-30: rgba(27,43,60,0.30);
+      --dd-radius-node: 2px;
+      --dd-radius-tag: 2px;
+      --dd-radius-container: 4px;
+    }
+    body { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:48px 32px; background:var(--dd-paper); color:var(--dd-ink); font-family:'DM Sans',system-ui,sans-serif; }
+    .frame { width:100%; max-width:1200px; }
+    .eyebrow { margin-bottom:8px; color:var(--dd-muted); font:500 8px 'Geist Mono',monospace; letter-spacing:.14em; text-transform:uppercase; }
+    h1 { margin-bottom:24px; font:400 28px/1.15 'Cormorant Garamond',serif; }
+    svg { display:block; width:100%; min-width:900px; }
+
+    /* Radius rides the token; the literal rx attribute stays as a Safari fallback. */
+    .dd-node      { rx: var(--dd-radius-node); }
+    .dd-tag       { rx: var(--dd-radius-tag); }
+    .dd-container { rx: var(--dd-radius-container); }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <p class="eyebrow">Flowchart · Imported from Mermaid · doc-inline · balanced</p>
+    <h1>Request validation and order storage</h1>
+    <svg viewBox="0 0 960 600" role="img" aria-labelledby="import-mermaid-title import-mermaid-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="import-mermaid-title">Request validation flow</title>
+      <desc id="import-mermaid-desc">Web and mobile requests enter an API gateway, pass a token decision, and reach an order service and Postgres.</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--dd-muted)"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--dd-accent)"/></marker>
+      </defs>
+      <rect width="960" height="600" fill="var(--dd-paper)"/>
+
+      <rect x="40" y="80" width="200" height="336" rx="8" class="dd-container" fill="none" stroke="var(--dd-rule)"/>
+      <text x="56" y="104" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono',monospace" letter-spacing=".14em">EDGE</text>
+      <rect x="288" y="80" width="632" height="336" rx="8" class="dd-container" fill="none" stroke="var(--dd-rule)"/>
+      <text x="304" y="104" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono',monospace" letter-spacing=".14em">CORE SERVICES</text>
+
+      <!-- Connectors precede nodes. -->
+      <path d="M208,168 H328" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M208,296 H264 A8,8 0 0 0 272,288 V200 A8,8 0 0 1 280,192 H328" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M488,192 H568" fill="none" stroke="var(--dd-accent)" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+      <path d="M696,192 H744 A8,8 0 0 1 752,200 V272" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M632,256 V336 A8,8 0 0 1 624,344 H488 A8,8 0 0 1 480,336 V232" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M408,160 V136 A8,8 0 0 1 416,128 H504 A8,8 0 0 1 512,136 V168 A8,8 0 0 1 504,176 H488" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+      <path d="M752,336 V352 A8,8 0 0 1 744,360 H696 A8,8 0 0 0 688,368 V384" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <rect x="240" y="148" width="56" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/><text x="268" y="156" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono',monospace" text-anchor="middle">REQUEST</text>
+      <rect x="220" y="276" width="56" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/><text x="248" y="284" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono',monospace" text-anchor="middle">REQUEST</text>
+      <rect x="504" y="172" width="48" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/><text x="528" y="180" fill="var(--dd-accent)" font-size="8" font-family="'Geist Mono',monospace" text-anchor="middle">VERIFY</text>
+      <rect x="708" y="172" width="32" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/><text x="724" y="180" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono',monospace" text-anchor="middle">YES</text>
+      <rect x="544" y="324" width="32" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/><text x="560" y="332" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono',monospace" text-anchor="middle">NO</text>
+      <rect x="432" y="108" width="48" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/><text x="456" y="116" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono',monospace" text-anchor="middle">RETRY</text>
+      <rect x="696" y="340" width="48" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/><text x="720" y="348" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono',monospace" text-anchor="middle">WRITES</text>
+
+      <rect x="64" y="140" width="144" height="56" rx="6" class="dd-node" fill="var(--dd-wash-10)" stroke="var(--dd-soft)"/><text x="136" y="172" fill="var(--dd-ink)" font-size="12" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Web App</text>
+      <rect x="64" y="268" width="144" height="56" rx="8" class="dd-container" fill="var(--dd-wash-10)" stroke="var(--dd-soft)"/><text x="136" y="300" fill="var(--dd-ink)" font-size="12" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Mobile App</text>
+      <rect x="328" y="160" width="160" height="64" rx="8" class="dd-container" fill="var(--dd-accent-tint)" stroke="var(--dd-accent)"/><text x="408" y="188" fill="var(--dd-ink)" font-size="12" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">API Gateway</text><text x="408" y="204" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono',monospace" text-anchor="middle">single entry</text>
+      <polygon points="632,128 696,192 632,256 568,192" fill="var(--dd-node-white)" stroke="var(--dd-ink)"/><text x="632" y="188" fill="var(--dd-ink)" font-size="12" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Token</text><text x="632" y="204" fill="var(--dd-ink)" font-size="12" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">valid?</text>
+      <rect x="744" y="272" width="160" height="64" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)"/><text x="824" y="300" fill="var(--dd-ink)" font-size="12" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Orders Service</text><text x="824" y="316" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono',monospace" text-anchor="middle">order write</text>
+      <rect x="608" y="384" width="160" height="56" rx="6" class="dd-node" fill="var(--dd-wash-5)" stroke="var(--dd-muted)"/><text x="688" y="408" fill="var(--dd-ink)" font-size="12" font-family="'DM Sans',sans-serif" font-weight="600" text-anchor="middle">Postgres</text><text x="688" y="424" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono',monospace" text-anchor="middle">orders</text>
+
+      <line x1="40" y1="504" x2="920" y2="504" stroke="color-mix(in srgb, var(--dd-ink) 10%, transparent)" stroke-width="0.8"/>
+      <text x="40" y="528" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono',monospace" letter-spacing=".14em">LEGEND</text>
+      <rect x="128" y="516" width="16" height="12" rx="2" class="dd-tag" fill="var(--dd-accent-tint)" stroke="var(--dd-accent)"/><text x="152" y="528" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono',monospace">FOCAL</text>
+      <polygon points="248,516 256,522 248,528 240,522" fill="var(--dd-node-white)" stroke="var(--dd-ink)"/><text x="268" y="528" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono',monospace">DECISION</text>
+      <rect x="376" y="516" width="16" height="12" rx="2" class="dd-tag" fill="var(--dd-wash-5)" stroke="var(--dd-muted)"/><text x="400" y="528" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono',monospace">STORE</text>
+      <rect x="472" y="516" width="16" height="12" rx="2" class="dd-tag" fill="var(--dd-wash-10)" stroke="var(--dd-soft)"/><text x="496" y="528" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono',monospace">INPUT</text>
+      <rect x="568" y="516" width="16" height="12" rx="2" class="dd-tag" fill="var(--dd-node-white)" stroke="var(--dd-ink)"/><text x="592" y="528" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono',monospace">SERVICE</text>
+    </svg>
+  </main>
+</body>
+</html>

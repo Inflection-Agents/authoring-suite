@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imported from draw.io — Order platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dd-paper: #F5F2EC;
+      --dd-paper-2: #EDE9E0;
+      --dd-node-white: #ffffff;
+      --dd-ink: #1B2B3C;
+      --dd-muted: #4A6275;
+      --dd-soft: #6E8799;
+      --dd-rule: rgba(27,43,60,0.14);
+      --dd-rule-solid: #C8C4BB;
+      --dd-accent: #967A3A;
+      --dd-accent-tint: rgba(150,122,58,0.10);
+      --dd-link: #3A5F8B;
+      --dd-series-1: #B0934B;
+      --dd-series-2: #4A6275;
+      --dd-series-3: #7AAE8E;
+      --dd-series-4: #C47A4A;
+      --dd-series-5: #6B5B8B;
+      --dd-wash-2: rgba(27,43,60,0.02);
+      --dd-wash-3: rgba(27,43,60,0.03);
+      --dd-wash-5: rgba(27,43,60,0.05);
+      --dd-wash-10: rgba(74,98,117,0.10);
+      --dd-wash-20: rgba(27,43,60,0.20);
+      --dd-wash-30: rgba(27,43,60,0.30);
+      --dd-radius-node: 2px;
+      --dd-radius-tag: 2px;
+      --dd-radius-container: 4px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--dd-paper);
+      color: var(--dd-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+
+    .frame { max-width: 1200px; width: 100%; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dd-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--dd-ink);
+      margin-bottom: 1.5rem;
+    }
+
+    svg { width: 100%; min-width: 900px; display: block; }
+
+    /* Radius rides the token; the literal rx attribute stays as a Safari fallback. */
+    .dd-node      { rx: var(--dd-radius-node); }
+    .dd-tag       { rx: var(--dd-radius-tag); }
+    .dd-container { rx: var(--dd-radius-container); }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · Imported from draw.io · doc-inline · balanced</p>
+    <h1>Order platform — request path</h1>
+
+    <svg viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="import-drawio-title import-drawio-desc">
+      <title id="import-drawio-title">Order platform — request path</title>
+      <desc id="import-drawio-desc">Architecture diagram showing web and mobile clients entering through an API Gateway, then reaching authentication, orders, Postgres, object storage, and Redis.</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--dd-muted)"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--dd-accent)"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--dd-link)"/></marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="var(--dd-paper)"/>
+
+      <!-- Zones -->
+      <rect x="40" y="96" width="200" height="224" rx="8" class="dd-container" fill="none" stroke="var(--dd-rule)" stroke-width="1"/>
+      <text x="56" y="120" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">EDGE</text>
+
+      <rect x="320" y="96" width="560" height="224" rx="8" class="dd-container" fill="none" stroke="var(--dd-rule)" stroke-width="1"/>
+      <text x="336" y="120" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">CORE SERVICES</text>
+
+      <rect x="320" y="368" width="560" height="112" rx="8" class="dd-container" fill="none" stroke="var(--dd-rule)" stroke-width="1"/>
+      <text x="336" y="392" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">DATA</text>
+
+      <!-- Connectors (drawn before boxes) -->
+      <!-- Web App -> API Gateway -->
+      <path d="M220,164 H272 A8,8 0 0 1 280,172 V192 A8,8 0 0 0 288,200 H360" fill="none" stroke="var(--dd-link)" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <!-- Mobile App -> API Gateway -->
+      <path d="M220,252 H296 A8,8 0 0 0 304,244 V232 A8,8 0 0 1 312,224 H360" fill="none" stroke="var(--dd-link)" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <!-- API Gateway -> Auth Service -->
+      <path d="M560,192 H592 A8,8 0 0 0 600,184 V164 A8,8 0 0 1 608,156 H640" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- API Gateway -> Orders Service -->
+      <path d="M560,224 H592 A8,8 0 0 0 600,232 V252 A8,8 0 0 1 608,260 H640" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- Orders Service -> Postgres -->
+      <path d="M680,288 V320 A8,8 0 0 1 672,328 H432 A8,8 0 0 0 424,336 V392" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- Orders Service -> Object Store (async) -->
+      <path d="M760,288 V344 A8,8 0 0 1 752,352 H616 A8,8 0 0 0 608,360 V392" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+      <!-- Auth Service -> Redis (async) -->
+      <path d="M840,156 H848 A8,8 0 0 1 856,164 V392" fill="none" stroke="var(--dd-muted)" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+
+      <!-- Arrow labels -->
+      <rect x="228" y="144" width="44" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="250" y="153" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HTTPS</text>
+
+      <rect x="228" y="232" width="44" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="250" y="241" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HTTPS</text>
+
+      <rect x="568" y="172" width="44" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="590" y="181" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">VERIFY</text>
+
+      <rect x="568" y="204" width="44" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="590" y="213" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">ROUTE</text>
+
+      <rect x="536" y="308" width="32" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="552" y="317" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">SQL</text>
+
+      <rect x="768" y="326" width="56" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="796" y="335" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">ARCHIVE</text>
+
+      <rect x="792" y="196" width="56" height="12" rx="2" class="dd-tag" fill="var(--dd-paper)"/>
+      <text x="820" y="205" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CACHE</text>
+
+      <!-- Nodes: Edge -->
+      <path d="M 62,136 H 212 L 220,144 V 184 L 212,192 H 62 A 2,2 0 0 1 60,190 V 138 A 2,2 0 0 1 62,136 Z" class="dd-node" fill="var(--dd-paper)"/>
+        <path d="M 62,136 H 212 L 220,144 V 184 L 212,192 H 62 A 2,2 0 0 1 60,190 V 138 A 2,2 0 0 1 62,136 Z" class="dd-node" fill="var(--dd-wash-10)" stroke="var(--dd-soft)" stroke-width="1"/>
+      <text x="140" y="169" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Web App</text>
+
+      <path d="M 62,224 H 212 L 220,232 V 272 L 212,280 H 62 A 2,2 0 0 1 60,278 V 226 A 2,2 0 0 1 62,224 Z" class="dd-node" fill="var(--dd-paper)"/>
+        <path d="M 62,224 H 212 L 220,232 V 272 L 212,280 H 62 A 2,2 0 0 1 60,278 V 226 A 2,2 0 0 1 62,224 Z" class="dd-node" fill="var(--dd-wash-10)" stroke="var(--dd-soft)" stroke-width="1"/>
+      <text x="140" y="257" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Mobile App</text>
+
+      <!-- Nodes: Core -->
+      <rect x="360" y="176" width="200" height="64" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+      <rect x="360" y="176" width="200" height="64" rx="6" class="dd-node" fill="var(--dd-accent-tint)" stroke="var(--dd-accent)" stroke-width="1.6"/>
+      <text x="460" y="204" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">API Gateway</text>
+      <text x="460" y="220" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">single entry point</text>
+
+      <rect x="640" y="128" width="200" height="56" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+      <rect x="640" y="128" width="200" height="56" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="740" y="153" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Auth Service</text>
+      <text x="740" y="169" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">token check</text>
+
+      <rect x="640" y="232" width="200" height="56" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+      <rect x="640" y="232" width="200" height="56" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="740" y="257" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Orders Service</text>
+      <text x="740" y="273" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">order write</text>
+
+      <!-- Nodes: Data -->
+      <path d="M 346,392 H 496 L 504,400 V 454 A 2,2 0 0 1 502,456 H 346 A 2,2 0 0 1 344,454 V 394 A 2,2 0 0 1 346,392 Z" class="dd-node" fill="var(--dd-paper)"/>
+        <path d="M 346,392 H 496 L 504,400 V 454 A 2,2 0 0 1 502,456 H 346 A 2,2 0 0 1 344,454 V 394 A 2,2 0 0 1 346,392 Z" class="dd-node" fill="var(--dd-wash-5)" stroke="var(--dd-muted)" stroke-width="1"/>
+      <text x="424" y="420" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Postgres</text>
+      <text x="424" y="436" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">orders</text>
+
+      <path d="M 530,392 H 680 L 688,400 V 454 A 2,2 0 0 1 686,456 H 530 A 2,2 0 0 1 528,454 V 394 A 2,2 0 0 1 530,392 Z" class="dd-node" fill="var(--dd-paper)"/>
+        <path d="M 530,392 H 680 L 688,400 V 454 A 2,2 0 0 1 686,456 H 530 A 2,2 0 0 1 528,454 V 394 A 2,2 0 0 1 530,392 Z" class="dd-node" fill="var(--dd-wash-5)" stroke="var(--dd-muted)" stroke-width="1"/>
+      <text x="608" y="420" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Object Store</text>
+      <text x="608" y="436" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">archive</text>
+
+      <path d="M 714,392 H 864 L 872,400 V 454 A 2,2 0 0 1 870,456 H 714 A 2,2 0 0 1 712,454 V 394 A 2,2 0 0 1 714,392 Z" class="dd-node" fill="var(--dd-paper)"/>
+        <path d="M 714,392 H 864 L 872,400 V 454 A 2,2 0 0 1 870,456 H 714 A 2,2 0 0 1 712,454 V 394 A 2,2 0 0 1 714,392 Z" class="dd-node" fill="var(--dd-wash-5)" stroke="var(--dd-muted)" stroke-width="1"/>
+      <text x="792" y="420" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Redis</text>
+      <text x="792" y="436" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">sessions</text>
+
+      <!-- Legend -->
+      <line x1="40" y1="512" x2="920" y2="512" stroke="color-mix(in srgb, var(--dd-ink) 10%, transparent)" stroke-width="0.8"/>
+      <text x="40" y="532" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEGEND</text>
+
+      <rect x="120" y="524" width="16" height="10" rx="2" class="dd-tag" fill="var(--dd-accent-tint)" stroke="var(--dd-accent)" stroke-width="1.6"/>
+      <text x="144" y="532" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">FOCAL</text>
+
+      <rect x="240" y="524" width="16" height="10" rx="2" class="dd-tag" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="264" y="532" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">SERVICE</text>
+
+      <rect x="376" y="524" width="16" height="10" rx="2" class="dd-tag" fill="var(--dd-wash-5)" stroke="var(--dd-muted)" stroke-width="1"/>
+      <text x="400" y="532" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">STORE</text>
+
+      <rect x="496" y="524" width="16" height="10" rx="2" class="dd-tag" fill="var(--dd-wash-10)" stroke="var(--dd-soft)" stroke-width="1"/>
+      <text x="520" y="532" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CLIENT</text>
+
+      <line x1="616" y1="529" x2="648" y2="529" stroke="var(--dd-link)" stroke-width="1.2"/>
+      <text x="656" y="532" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">HTTP CALL</text>
+
+      <line x1="772" y1="529" x2="804" y2="529" stroke="var(--dd-muted)" stroke-width="1.2" stroke-dasharray="5,4"/>
+      <text x="812" y="532" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ASYNC</text>
+    </svg>
+  </div>
+</body>
+</html>

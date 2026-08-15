@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[PROJECT NAME] Architecture</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Tokens ─────────────────────────────────────────────────── */
+    :root {
+      --dd-paper: #F5F2EC;
+      --dd-paper-2: #EDE9E0;
+      --dd-node-white: #ffffff;
+      --dd-ink: #1B2B3C;
+      --dd-muted: #4A6275;
+      --dd-soft: #6E8799;
+      --dd-rule: rgba(27,43,60,0.14);
+      --dd-rule-solid: #C8C4BB;
+      --dd-accent: #967A3A;
+      --dd-accent-tint: rgba(150,122,58,0.10);
+      --dd-link: #3A5F8B;
+      --dd-series-1: #B0934B;
+      --dd-series-2: #4A6275;
+      --dd-series-3: #7AAE8E;
+      --dd-series-4: #C47A4A;
+      --dd-series-5: #6B5B8B;
+      --dd-wash-2: rgba(27,43,60,0.02);
+      --dd-wash-3: rgba(27,43,60,0.03);
+      --dd-wash-5: rgba(27,43,60,0.05);
+      --dd-wash-10: rgba(74,98,117,0.10);
+      --dd-wash-20: rgba(27,43,60,0.20);
+      --dd-wash-30: rgba(27,43,60,0.30);
+      --dd-radius-node: 2px;
+      --dd-radius-tag: 2px;
+      --dd-radius-container: 4px;
+      --color-rule-solid: color-mix(in srgb, var(--dd-muted) 25%, transparent);
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-serif: 'Cormorant Garamond', 'Times New Roman', serif;
+      --font-mono: 'Geist Mono', ui-monospace, Menlo, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--dd-paper);
+      min-height: 100vh;
+      padding: 3rem 2rem;
+      color: var(--dd-ink);
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    .header { margin-bottom: 2.5rem; }
+
+    .header-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dd-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.75rem, 3vw + 1rem, 2.5rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--dd-ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--dd-muted);
+      max-width: 52ch;
+    }
+
+    /* ── Diagram container ────────────────────────────────────────── */
+    /* Default: clean, borderless — diagram sits directly on the page paper.
+       For the framed/boxed variant, uncomment the background/border/padding below. */
+    .diagram-container {
+      background: transparent;
+      border: none;
+      padding: 0;
+      overflow-x: auto;
+      /* background: var(--dd-paper-2); */
+      /* border: 1px solid var(--dd-rule); */
+      /* border-radius: 8px; */
+      /* padding: 1.5rem; */
+    }
+
+    svg { width: 100%; min-width: 900px; display: block; }
+
+    /* ── Info cards ───────────────────────────────────────────────── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .card {
+      background: var(--dd-node-white);
+      border-radius: 6px;
+      border: 1px solid var(--dd-rule);
+      padding: 1.25rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.875rem;
+      padding-bottom: 0.875rem;
+      border-bottom: 1px solid color-mix(in srgb, var(--dd-ink) 8%, transparent);
+    }
+
+    .card-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .card-dot.ink    { background: var(--dd-ink); }
+    .card-dot.muted  { background: var(--dd-muted); }
+    .card-dot.accent  { background: var(--dd-accent); }
+    .card-dot.link   { background: var(--dd-link); }
+    .card-dot.soft   { background: var(--dd-soft); }
+
+    .card h3 {
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--dd-ink);
+      letter-spacing: -0.005em;
+    }
+
+    .card ul {
+      list-style: none;
+      color: var(--dd-muted);
+      font-size: 0.8125rem;
+      line-height: 1.55;
+    }
+
+    .card li {
+      margin-bottom: 0.3rem;
+      padding-left: 0.875rem;
+      position: relative;
+    }
+
+    .card li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: color-mix(in srgb, var(--dd-ink) 25%, transparent);
+      font-size: 0.75rem;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────────── */
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid color-mix(in srgb, var(--dd-ink) 10%, transparent);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--dd-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* Radius rides the token; the literal rx attribute stays as a Safari fallback. */
+    .dd-node      { rx: var(--dd-radius-node); }
+    .dd-tag       { rx: var(--dd-radius-tag); }
+    .dd-container { rx: var(--dd-radius-container); }
+  </style>
+  <!-- Optional: part of a multi-diagram set? Uncomment and fill in — see
+       references/diagram-sets.md. Omit entirely for a standalone diagram.
+  <meta name="diagram:id" content="[set-name].[this-diagram]">
+  <meta name="diagram:level" content="[landscape|context|container|component|code|deployment|dynamic]">
+  <meta name="diagram:parent" content="[parent-diagram-id, omit for the set's root]">
+  <meta name="diagram:subject" content="[element-id in the parent this diagram expands]">
+  <meta name="diagram:elements" content="[comma,separated,element,ids,drawn,here]">
+  -->
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <p class="header-eyebrow">Architecture · [Date]</p>
+      <h1>[Project Name]</h1>
+      <p class="subtitle">[One-sentence description of what this diagram shows.]</p>
+    </div>
+
+    <!-- Main Diagram -->
+    <div class="diagram-container">
+      <!-- Replace [diagram-slug] with a unique slug for this diagram before export. -->
+      <svg viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="[diagram-slug]-title [diagram-slug]-desc">
+        <title id="[diagram-slug]-title">[Diagram title]</title>
+        <desc id="[diagram-slug]-desc">[One sentence describing what the diagram shows]</desc>
+        <defs>
+
+          <!-- OPTIONAL: dot-pattern background. Uncomment the <pattern> below and the second <rect> in the bg section to enable. -->
+          <!--
+          <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="0.9" fill="color-mix(in srgb, var(--dd-ink) 10%, transparent)"/>
+          </pattern>
+          -->
+
+          <!-- Arrow: muted (default — generic / internal connections) -->
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="var(--dd-muted)"/>
+          </marker>
+
+          <!-- Arrow: gold (accent — primary / highlighted flows) -->
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="var(--dd-accent)"/>
+          </marker>
+
+          <!-- Arrow: link-blue (var(--dd-link) — HTTP/API / external calls) -->
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="var(--dd-link)"/>
+          </marker>
+
+        </defs>
+
+        <!-- Background: paper + dot grid -->
+        <rect width="100%" height="100%" fill="var(--dd-paper)"/>
+        <!-- <rect width="100%" height="100%" fill="url(#dots)" opacity="0.6"/> -->
+
+        <!-- =================================================================
+             DRAW ARROWS FIRST — they paint behind boxes (SVG document order).
+             ================================================================= -->
+
+        <!-- HTTP/API arrow (link-blue) with label -->
+        <line x1="130" y1="305" x2="195" y2="305" stroke="var(--dd-link)" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+        <text x="162" y="297" fill="var(--dd-link)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HTTPS</text>
+
+        <!-- Generic internal arrow -->
+        <line x1="310" y1="305" x2="356" y2="305" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- Vertical arrow -->
+        <line x1="253" y1="332" x2="253" y2="376" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- Auth / security flow (dashed gold) -->
+        <path d="M 80 140 L 80 200 Q 80 218 98 218 L 200 218 Q 218 218 218 236 L 218 276"
+              fill="none" stroke="var(--dd-accent)" stroke-width="1.2" stroke-dasharray="5,4"
+              marker-end="url(#arrow-accent)"/>
+        <text x="148" y="212" fill="var(--dd-accent)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">JWT</text>
+
+        <!-- Primary data flow (gold) -->
+        <line x1="620" y1="305" x2="696" y2="305" stroke="var(--dd-accent)" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+        <text x="655" y="297" fill="var(--dd-accent)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">TLS</text>
+
+
+        <!-- =================================================================
+             COMPONENT BOXES
+             Pattern: opaque paper rect first (masks arrows), then styled rect.
+             Mono type labels use Geist Mono — mono is dominant in tool/data.
+             ================================================================= -->
+
+        <!-- ── External / User ──────────────────────────────────────── -->
+        <rect x="30" y="278" width="100" height="54" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+        <rect x="30" y="278" width="100" height="54" rx="6" class="dd-node" fill="var(--dd-wash-10)" stroke="var(--dd-soft)" stroke-width="1"/>
+        <!-- Rectangular type tag (not rounded — brand rule) -->
+        <rect x="38" y="284" width="26" height="12" rx="2" class="dd-tag" fill="transparent" stroke="color-mix(in srgb, var(--dd-soft) 40%, transparent)" stroke-width="0.8"/>
+        <text x="51" y="293" fill="var(--dd-soft)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+        <!-- Main label -->
+        <text x="80" y="308" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Users</text>
+        <text x="80" y="323" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Browser / Mobile</text>
+
+        <!-- ── Security / Auth ──────────────────────────────────────── -->
+        <rect x="30" y="78" width="100" height="56" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+        <rect x="30" y="78" width="100" height="56" rx="6" class="dd-node" fill="color-mix(in srgb, var(--dd-accent) 6%, transparent)" stroke="color-mix(in srgb, var(--dd-accent) 50%, transparent)" stroke-width="1"/>
+        <rect x="38" y="84" width="28" height="12" rx="2" class="dd-tag" fill="transparent" stroke="color-mix(in srgb, var(--dd-accent) 40%, transparent)" stroke-width="0.8"/>
+        <text x="52" y="93" fill="color-mix(in srgb, var(--dd-accent) 80%, transparent)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">AUTH</text>
+        <text x="80" y="110" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Auth Provider</text>
+        <text x="80" y="125" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">OAuth 2.0</text>
+
+        <!-- ── Region boundary (dashed) ─────────────────────────────── -->
+        <rect x="158" y="38" width="822" height="624" rx="8" class="dd-container" fill="transparent" stroke="color-mix(in srgb, var(--dd-ink) 18%, transparent)" stroke-width="1" stroke-dasharray="6,4"/>
+        <text x="170" y="55" fill="var(--dd-muted)" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.12em">AWS REGION · US-WEST-2</text>
+
+        <!-- ── Cloud / CDN (with faded watermark numeral — slide card pattern) -->
+        <rect x="198" y="278" width="112" height="54" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+        <rect x="198" y="278" width="112" height="54" rx="6" class="dd-node" fill="var(--dd-wash-3)" stroke="var(--dd-wash-30)" stroke-width="1"/>
+        <!-- Faded mono watermark numeral (background) -->
+        <text x="294" y="323" fill="color-mix(in srgb, var(--dd-ink) 6%, transparent)" font-size="40" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="end">01</text>
+        <rect x="206" y="284" width="24" height="12" rx="2" class="dd-tag" fill="transparent" stroke="color-mix(in srgb, var(--dd-ink) 22%, transparent)" stroke-width="0.8"/>
+        <text x="218" y="293" fill="var(--dd-soft)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CDN</text>
+        <text x="254" y="308" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">CloudFront</text>
+        <text x="254" y="323" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">AWS CDN</text>
+
+        <!-- ── Cloud / Storage ───────────────────────────────────────── -->
+        <rect x="198" y="378" width="112" height="102" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+        <rect x="198" y="378" width="112" height="102" rx="6" class="dd-node" fill="var(--dd-wash-3)" stroke="var(--dd-wash-30)" stroke-width="1"/>
+        <text x="294" y="468" fill="color-mix(in srgb, var(--dd-ink) 6%, transparent)" font-size="40" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="end">02</text>
+        <rect x="206" y="384" width="22" height="12" rx="2" class="dd-tag" fill="transparent" stroke="color-mix(in srgb, var(--dd-ink) 22%, transparent)" stroke-width="0.8"/>
+        <text x="217" y="393" fill="var(--dd-soft)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">S3</text>
+        <text x="254" y="408" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">S3 Buckets</text>
+        <text x="254" y="426" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">bucket-assets</text>
+        <text x="254" y="440" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">bucket-uploads</text>
+        <text x="254" y="466" fill="var(--dd-accent)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">OAI PROTECTED</text>
+
+        <!-- ── Security group boundary ───────────────────────────────── -->
+        <rect x="348" y="264" width="120" height="80" rx="6" class="dd-node" fill="transparent" stroke="color-mix(in srgb, var(--dd-accent) 45%, transparent)" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="356" y="278" fill="color-mix(in srgb, var(--dd-accent) 70%, transparent)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.08em">SG · :443</text>
+
+        <!-- ── Load Balancer (inside security group) ──────────────────── -->
+        <rect x="358" y="282" width="100" height="54" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+        <rect x="358" y="282" width="100" height="54" rx="6" class="dd-node" fill="var(--dd-wash-3)" stroke="var(--dd-wash-30)" stroke-width="1"/>
+        <rect x="366" y="288" width="22" height="12" rx="2" class="dd-tag" fill="transparent" stroke="color-mix(in srgb, var(--dd-ink) 22%, transparent)" stroke-width="0.8"/>
+        <text x="377" y="297" fill="var(--dd-soft)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">LB</text>
+        <text x="408" y="311" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Load Balancer</text>
+        <text x="408" y="326" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">HTTPS :443</text>
+
+        <!-- ── Backend / API ─────────────────────────────────────────── -->
+        <rect x="508" y="278" width="112" height="54" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+        <rect x="508" y="278" width="112" height="54" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+        <rect x="516" y="284" width="26" height="12" rx="2" class="dd-tag" fill="transparent" stroke="color-mix(in srgb, var(--dd-ink) 40%, transparent)" stroke-width="0.8"/>
+        <text x="529" y="293" fill="var(--dd-ink)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
+        <text x="564" y="308" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">API Server</text>
+        <text x="564" y="323" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">FastAPI :8000</text>
+
+        <!-- ── Database ───────────────────────────────────────────────── -->
+        <rect x="698" y="278" width="120" height="54" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+        <rect x="698" y="278" width="120" height="54" rx="6" class="dd-node" fill="var(--dd-wash-5)" stroke="var(--dd-muted)" stroke-width="1"/>
+        <rect x="706" y="284" width="22" height="12" rx="2" class="dd-tag" fill="transparent" stroke="color-mix(in srgb, var(--dd-muted) 50%, transparent)" stroke-width="0.8"/>
+        <text x="717" y="293" fill="var(--dd-muted)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">DB</text>
+        <text x="758" y="308" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Database</text>
+        <text x="758" y="323" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">PostgreSQL</text>
+
+        <!-- ── Frontend / UI ─────────────────────────────────────────── -->
+        <rect x="198" y="518" width="200" height="112" rx="6" class="dd-node" fill="var(--dd-paper)"/>
+        <rect x="198" y="518" width="200" height="112" rx="6" class="dd-node" fill="var(--dd-accent-tint)" stroke="var(--dd-accent)" stroke-width="1"/>
+        <rect x="206" y="524" width="22" height="12" rx="2" class="dd-tag" fill="transparent" stroke="color-mix(in srgb, var(--dd-accent) 50%, transparent)" stroke-width="0.8"/>
+        <text x="217" y="533" fill="var(--dd-accent)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">UI</text>
+        <text x="298" y="550" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Web App</text>
+        <text x="298" y="567" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">React + TypeScript</text>
+        <text x="298" y="581" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Astro SSG</text>
+        <!-- Link-blue URL label -->
+        <text x="298" y="614" fill="var(--dd-link)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.04em">app.example.com</text>
+
+
+        <!-- =================================================================
+             LEGEND — OUTSIDE all boundary boxes.
+             Region boundary ends at y=662 → legend starts at y=682.
+             ================================================================= -->
+        <text x="510" y="544" fill="var(--dd-ink)" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.12em">LEGEND</text>
+
+        <rect x="510" y="558" width="14" height="10" rx="2" class="dd-tag" fill="var(--dd-accent-tint)" stroke="var(--dd-accent)" stroke-width="1"/>
+        <text x="530" y="567" fill="var(--dd-muted)" font-size="9" font-family="'DM Sans', sans-serif">Frontend / UI</text>
+
+        <rect x="510" y="576" width="14" height="10" rx="2" class="dd-tag" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+        <text x="530" y="585" fill="var(--dd-muted)" font-size="9" font-family="'DM Sans', sans-serif">Backend / API</text>
+
+        <rect x="510" y="594" width="14" height="10" rx="2" class="dd-tag" fill="var(--dd-wash-3)" stroke="var(--dd-wash-30)" stroke-width="1"/>
+        <text x="530" y="603" fill="var(--dd-muted)" font-size="9" font-family="'DM Sans', sans-serif">Cloud / Service</text>
+
+        <rect x="510" y="612" width="14" height="10" rx="2" class="dd-tag" fill="var(--dd-wash-5)" stroke="var(--dd-muted)" stroke-width="1"/>
+        <text x="530" y="621" fill="var(--dd-muted)" font-size="9" font-family="'DM Sans', sans-serif">Database</text>
+
+        <rect x="510" y="630" width="14" height="10" rx="2" class="dd-tag" fill="var(--dd-wash-10)" stroke="var(--dd-soft)" stroke-width="1"/>
+        <text x="530" y="639" fill="var(--dd-muted)" font-size="9" font-family="'DM Sans', sans-serif">External / User</text>
+
+        <!-- Arrow types -->
+        <line x1="510" y1="655" x2="524" y2="655" stroke="var(--dd-link)" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+        <text x="530" y="659" fill="var(--dd-muted)" font-size="9" font-family="'DM Sans', sans-serif">HTTP / API call</text>
+
+        <line x1="510" y1="671" x2="524" y2="671" stroke="var(--dd-accent)" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow-accent)"/>
+        <text x="530" y="675" fill="var(--dd-muted)" font-size="9" font-family="'DM Sans', sans-serif">Auth flow</text>
+
+        <line x1="510" y1="687" x2="524" y2="687" stroke="var(--dd-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <text x="530" y="691" fill="var(--dd-muted)" font-size="9" font-family="'DM Sans', sans-serif">Internal connection</text>
+
+        <rect x="510" y="698" width="14" height="10" rx="2" class="dd-tag" fill="transparent" stroke="color-mix(in srgb, var(--dd-accent) 45%, transparent)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="530" y="707" fill="var(--dd-muted)" font-size="9" font-family="'DM Sans', sans-serif">Security group</text>
+
+      </svg>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="cards">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-dot accent"></span>
+          <h3>Card Title 1</h3>
+        </div>
+        <ul>
+          <li>Item one</li>
+          <li>Item two</li>
+          <li>Item three</li>
+          <li>Item four</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-dot ink"></span>
+          <h3>Card Title 2</h3>
+        </div>
+        <ul>
+          <li>Item one</li>
+          <li>Item two</li>
+          <li>Item three</li>
+          <li>Item four</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-dot muted"></span>
+          <h3>Card Title 3</h3>
+        </div>
+        <ul>
+          <li>Item one</li>
+          <li>Item two</li>
+          <li>Item three</li>
+          <li>Item four</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span>[Project Name] · Architecture Overview</span>
+      <span>[Date]</span>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# Empty. Every shipped example and template now conforms to the current skin.
+#
+# This file used to list 20 pre-2.0 examples that predated the palette. M1 bound every
+# colour to the --dd-* token contract and remediated the colours that belonged to no skin
+# at all, so the exemption is no longer needed by anything.
+#
+# Do not add a file here to get it through the linter — see CONTRIBUTING.md. The list only
+# ever shrinks.

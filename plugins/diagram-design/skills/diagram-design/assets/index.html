@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diagram Design · Gallery</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --paper: #f5f4ed;
+        --paper-2: #efeee5;
+        --ink: #0b0d0b;
+        --muted: #52534e;
+        --soft: #65655c;
+        --rule: rgba(11, 13, 11, 0.12);
+        --rule-strong: rgba(11, 13, 11, 0.25);
+        --accent: #f7591f;
+        --sans: "DM Sans", system-ui, sans-serif;
+        --serif: "Cormorant Garamond", serif;
+        --mono: "Geist Mono", ui-monospace, monospace;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: var(--sans);
+        background: var(--paper);
+        color: var(--ink);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .topbar {
+        padding: 1rem 1.25rem 0.625rem;
+        border-bottom: 1px solid var(--rule);
+        flex: 0 0 auto;
+      }
+      .title-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        gap: 1rem;
+      }
+      .title-row h1 {
+        font-family: var(--serif);
+        font-size: 1.5rem;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+        line-height: 1;
+      }
+      .title-row .meta {
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .title-row .open-raw {
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 0.3rem 0.625rem;
+        border: 1px solid var(--rule);
+        border-radius: 4px;
+        transition:
+          color 0.15s,
+          border-color 0.15s;
+      }
+      .open-raw:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        margin-bottom: 0.5rem;
+      }
+      .tabs.variants {
+        margin-bottom: 0;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--rule);
+      }
+      .tab {
+        font-family: var(--sans);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        padding: 0.375rem 0.75rem;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--rule);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.12s;
+        letter-spacing: -0.005em;
+      }
+      .tab:hover {
+        color: var(--ink);
+        border-color: var(--rule-strong);
+      }
+      .tab:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .tab.active {
+        background: var(--ink);
+        color: var(--paper);
+        border-color: var(--ink);
+      }
+      .tab .eyebrow {
+        display: inline-block;
+        margin-right: 0.25rem;
+        font-family: var(--mono);
+        font-size: 0.56rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: inherit;
+        opacity: 0.5;
+      }
+      .tab.new::after {
+        content: "NEW";
+        display: inline-block;
+        margin-left: 0.35rem;
+        font-family: var(--mono);
+        font-size: 0.54rem;
+        letter-spacing: 0.12em;
+        color: var(--accent);
+        vertical-align: 1px;
+      }
+      .tab.active.new::after {
+        color: var(--paper);
+      }
+
+      #type-tabs {
+        max-height: 34vh;
+        overflow-y: auto;
+        padding-right: 0.25rem;
+        align-content: flex-start;
+      }
+      .tab-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.375rem;
+        width: 100%;
+      }
+      .group-label {
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        opacity: 0.7;
+        width: 100%;
+        margin: 0.625rem 0 0.1875rem;
+      }
+      .tab-group:first-child .group-label {
+        margin-top: 0;
+      }
+      .reach-line {
+        font-family: var(--sans);
+        font-size: 0.78rem;
+        line-height: 1.4;
+        color: var(--muted);
+        margin: 0.25rem 0 0.625rem;
+        min-height: 1.2em;
+      }
+
+      main {
+        flex: 1 1 auto;
+        position: relative;
+        background: var(--paper-2);
+        overflow: hidden;
+      }
+      iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: var(--paper);
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="title-row">
+        <h1>
+          Diagram Design
+          <span
+            class="meta"
+            style="
+              font-family: var(--mono);
+              font-size: 0.66rem;
+              margin-left: 0.5rem;
+            "
+            >· gallery</span
+          >
+        </h1>
+        <div style="display: flex; gap: 0.5rem">
+          <a class="open-raw" href="icons.html" target="_blank" rel="noopener"
+            >icon library ↗</a
+          >
+          <a
+            class="open-raw"
+            id="open-raw"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            >open in new tab ↗</a
+          >
+        </div>
+      </div>
+
+      <p class="reach-line" id="reach-line"></p>
+
+      <div class="tabs" id="type-tabs" role="tablist" aria-label="Diagram type, grouped by relation">
+        <div class="tab-group">
+          <span class="group-label">Topology — components + connections</span>
+          <button class="tab active" data-type="architecture" data-reach="Components + connections in a system">
+            <span class="eyebrow">01</span>Architecture
+          </button>
+          <button class="tab new" data-type="datalake" data-reach="Open data lake — a worked Architecture scenario">
+            <span class="eyebrow">17</span>Data lake
+          </button>
+          <button class="tab new" data-type="high-level" data-reach="End-to-end data stack on a container cluster">
+            <span class="eyebrow">23</span>High-Level
+          </button>
+          <button class="tab new" data-type="high-level-vertical" data-reach="High-Level, parametric/vertical preset">
+            <span class="eyebrow">28</span>High-Level · Parametric
+          </button>
+          <button class="tab new" data-type="dp-integration" data-reach="Integration topology of a data platform — sources → core → consumers">
+            <span class="eyebrow">27</span>DP integration
+          </button>
+          <button class="tab new" data-type="it-state" data-reach="Legacy IT landscape grouped by phase/department; documents the before state in modernization proposals">
+            <span class="eyebrow">33</span>IT current-state
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Detail-of</span>
+          <button class="tab new" data-type="zoom" data-reach="An overview with one element expanded into full detail below">
+            <span class="eyebrow">43</span>Zoom
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Differs-from</span>
+          <button class="tab new" data-type="contrast" data-reach="A current state and a proposed state, one difference between them">
+            <span class="eyebrow">44</span>Contrast
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Derives-from</span>
+          <button class="tab new" data-type="lineage" data-reach="One asset's provenance (derives-from) and impact (breaks-if-changed), multi-parent">
+            <span class="eyebrow">45</span>Lineage
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Assembled-from</span>
+          <button class="tab new" data-type="composition" data-reach="A shared catalog of reusable parts plus one product assembled from a selection of them">
+            <span class="eyebrow">46</span>Composition
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Runs-on</span>
+          <button class="tab new" data-type="deployment" data-reach="Nested infrastructure (region/zone/cluster) holding running container instances, with replicas">
+            <span class="eyebrow">47</span>Deployment
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Branches</span>
+          <button class="tab" data-type="flowchart" data-reach="Decision logic with branches">
+            <span class="eyebrow">02</span>Flowchart
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Sequences — temporal ordering</span>
+          <button class="tab" data-type="sequence" data-reach="Time-ordered messages between actors">
+            <span class="eyebrow">03</span>Sequence
+          </button>
+          <button class="tab new" data-type="sequence-oauth" data-reach="Sequence, OAuth-flow preset">
+            <span class="eyebrow">34</span>Sequence · OAuth
+          </button>
+          <button class="tab" data-type="timeline" data-reach="Events positioned in time">
+            <span class="eyebrow">06</span>Timeline
+          </button>
+          <button class="tab" data-type="swimlane" data-reach="Cross-functional process with handoffs">
+            <span class="eyebrow">07</span>Swimlane
+          </button>
+          <button class="tab new" data-type="gantt" data-reach="Tasks and phases on a timeline">
+            <span class="eyebrow">20</span>Gantt
+          </button>
+          <button class="tab new" data-type="process" data-reach="Multi-actor sequential process with data handoffs">
+            <span class="eyebrow">24</span>Process
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Transitions</span>
+          <button class="tab" data-type="state" data-reach="States + transitions + guards">
+            <span class="eyebrow">04</span>State
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Structures</span>
+          <button class="tab" data-type="er" data-reach="Entities + fields + relationships, or class/type structure in code">
+            <span class="eyebrow">05</span>ER
+          </button>
+          <button class="tab new" data-type="class" data-reach="Code level, class-structure preset">
+            <span class="eyebrow">42</span>Class · code level
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Positions — axis-based placement</span>
+          <button class="tab" data-type="quadrant" data-reach="Two-axis positioning / prioritization">
+            <span class="eyebrow">08</span>Quadrant
+          </button>
+          <button class="tab new" data-type="quadrant-consultant" data-single data-reach="Quadrant, BCG/McKinsey-style consultant preset">
+            <span class="eyebrow">37</span>Quadrant · consultant
+          </button>
+          <button class="tab new" data-type="radar" data-reach="Multiple entities scored across 3–5 quantitative criteria">
+            <span class="eyebrow">15</span>Radar
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Recurs</span>
+          <button class="tab new" data-type="loop" data-reach="Reinforcing cycle / flywheel where the last step feeds the first and a shared hub accumulates state">
+            <span class="eyebrow">16</span>Loop
+          </button>
+          <button class="tab new" data-type="loop-terminal" data-single data-reach="Loop, terminal/CLI-styled preset">
+            <span class="eyebrow">38</span>Loop · terminal
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Contains — hierarchy, tiers, scope</span>
+          <button class="tab new" data-type="nested" data-reach="Hierarchy through containment / scope">
+            <span class="eyebrow">09</span>Nested
+          </button>
+          <button class="tab new" data-type="tree" data-reach="Parent → children relationships">
+            <span class="eyebrow">10</span>Tree
+          </button>
+          <button class="tab new" data-type="org-chart" data-reach="Human/agent/team ownership, reporting, routing, escalation">
+            <span class="eyebrow">11</span>Org chart
+          </button>
+          <button class="tab new" data-type="layers" data-reach="Stacked abstraction levels">
+            <span class="eyebrow">12</span>Layers
+          </button>
+          <button class="tab new" data-type="medallion" data-reach="Multi-tier data storage with quality levels and access policies">
+            <span class="eyebrow">22</span>Medallion
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Overlaps</span>
+          <button class="tab new" data-type="venn" data-reach="Overlap between sets">
+            <span class="eyebrow">13</span>Venn
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Narrows</span>
+          <button class="tab new" data-type="pyramid" data-reach="Ranked hierarchy or conversion drop-off">
+            <span class="eyebrow">14</span>Pyramid
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Compares — quantitative charts</span>
+          <button class="tab new" data-type="bar" data-reach="Quantitative comparison across categories">
+            <span class="eyebrow">18</span>Bar
+          </button>
+          <button class="tab new" data-type="line" data-reach="Continuous trends over time">
+            <span class="eyebrow">19</span>Line
+          </button>
+          <button class="tab new" data-type="scatter" data-reach="Distribution and correlation between two variables">
+            <span class="eyebrow">21</span>Scatter
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Flows-to</span>
+          <button class="tab new" data-type="data-flow" data-reach="Role-scoped data flow: who does what at each pipeline step">
+            <span class="eyebrow">26</span>Data flow
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Combines</span>
+          <button class="tab new" data-type="matrix" data-reach="Two independent dimensions, combination is the insight">
+            <span class="eyebrow">48</span>Matrix
+          </button>
+          <button class="tab new" data-type="dp-security-matrix" data-reach="Matrix, per-role/per-component permissions preset">
+            <span class="eyebrow">32</span>DP security matrix
+          </button>
+        </div>
+
+        <div class="tab-group">
+          <span class="group-label">Imports &amp; motion demos — capability, not a relation</span>
+          <button class="tab new" data-type="import-drawio" data-single data-reach="Redraw a .drawio / .drawio.png / .drawio.svg source">
+            <span class="eyebrow">35</span>Import · draw.io
+          </button>
+          <button class="tab new" data-type="import-mermaid" data-single data-reach="Redraw a Mermaid .mmd source">
+            <span class="eyebrow">36</span>Import · Mermaid
+          </button>
+          <button class="tab new" data-type="policy-trace-animated" data-single data-reach="Paired policy-evaluation traces, animated">
+            <span class="eyebrow">39</span>Policy trace · animated
+          </button>
+          <button class="tab new" data-type="queue-animated" data-single data-reach="Fan-in queue / bottleneck, animated">
+            <span class="eyebrow">40</span>Fan-in queue · animated
+          </button>
+          <button class="tab new" data-type="paved-road-animated" data-single data-reach="Secure paved road, animated">
+            <span class="eyebrow">41</span>Secure paved road · animated
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="tabs variants"
+        id="variant-tabs"
+        role="tablist"
+        aria-label="Variant"
+      >
+        <button class="tab active" data-variant="">Minimal light</button>
+        <button class="tab" data-variant="-dark">Minimal dark</button>
+        <button class="tab" data-variant="-full">Full editorial</button>
+      </div>
+    </header>
+
+    <main>
+      <iframe
+        id="preview"
+        src="example-architecture.html"
+        title="Preview"
+      ></iframe>
+    </main>
+
+    <script>
+      const state = { type: "architecture", variant: "" };
+      const iframe = document.getElementById("preview");
+      const openRaw = document.getElementById("open-raw");
+      const reachLine = document.getElementById("reach-line");
+
+      function update() {
+        const activeType = document.querySelector("#type-tabs .tab.active");
+        const single = activeType && activeType.hasAttribute("data-single");
+        const variantTabs = document.querySelectorAll("#variant-tabs .tab");
+        if (single) state.variant = "";
+        variantTabs.forEach((tab) => {
+          tab.disabled = single && tab.dataset.variant !== "";
+          tab.classList.toggle("active", tab.dataset.variant === state.variant);
+        });
+        const src = `example-${state.type}${state.variant}.html`;
+        iframe.src = src;
+        openRaw.href = src;
+        reachLine.textContent = activeType ? activeType.dataset.reach || "" : "";
+      }
+
+      function bindTabs(containerId, key) {
+        const container = document.getElementById(containerId);
+        container.addEventListener("click", (e) => {
+          const btn = e.target.closest(".tab");
+          if (!btn) return;
+          container
+            .querySelectorAll(".tab")
+            .forEach((t) => t.classList.remove("active"));
+          btn.classList.add("active");
+          state[key] = btn.dataset[key];
+          update();
+        });
+      }
+
+      bindTabs("type-tabs", "type");
+      bindTabs("variant-tabs", "variant");
+      update();
+    </script>
+  </body>
+</html>

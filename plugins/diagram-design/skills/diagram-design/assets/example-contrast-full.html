@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product platform · before / after (full)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dd-paper: #F5F2EC;
+      --dd-paper-2: #EDE9E0;
+      --dd-node-white: #ffffff;
+      --dd-ink: #1B2B3C;
+      --dd-muted: #4A6275;
+      --dd-soft: #6E8799;
+      --dd-rule: rgba(27,43,60,0.14);
+      --dd-rule-solid: #C8C4BB;
+      --dd-accent: #967A3A;
+      --dd-accent-tint: rgba(150,122,58,0.10);
+      --dd-link: #3A5F8B;
+      --dd-series-1: #B0934B;
+      --dd-series-2: #4A6275;
+      --dd-series-3: #7AAE8E;
+      --dd-series-4: #C47A4A;
+      --dd-series-5: #6B5B8B;
+      --dd-wash-2: rgba(27,43,60,0.02);
+      --dd-wash-3: rgba(27,43,60,0.03);
+      --dd-wash-5: rgba(27,43,60,0.05);
+      --dd-wash-10: rgba(74,98,117,0.10);
+      --dd-wash-20: rgba(27,43,60,0.20);
+      --dd-wash-30: rgba(27,43,60,0.30);
+      --dd-radius-node: 2px;
+      --dd-radius-tag: 2px;
+      --dd-radius-container: 4px;
+      --font-sans: 'DM Sans',system-ui,sans-serif;
+      --font-serif: 'Cormorant Garamond',serif;
+      --font-mono: 'Geist Mono',ui-monospace,monospace;
+    }
+    body { font-family: var(--font-sans); background: var(--dd-paper); min-height: 100vh; padding: 3rem 2rem; color: var(--dd-ink); }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .header { margin-bottom: 2.5rem; }
+    .header-eyebrow { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dd-muted); margin-bottom: 0.75rem; }
+    h1 { font-family: var(--font-serif); font-size: clamp(1.75rem, 3vw + 1rem, 2.5rem); font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 0.5rem; }
+    .subtitle { font-size: 1rem; line-height: 1.55; color: var(--dd-muted); max-width: 62ch; }
+    .diagram-container { background: var(--dd-paper-2); border-radius: 8px; border: 1px solid var(--dd-rule); padding: 1.5rem; overflow-x: auto; }
+    svg { width: 100%; min-width: 900px; display: block; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 1rem; margin-top: 1.5rem; }
+    @media (max-width: 820px) { .cards { grid-template-columns: 1fr; } }
+    .card { background: var(--dd-node-white); border-radius: 6px; border: 1px solid var(--dd-rule); padding: 1.25rem; }
+    .card .eyebrow { font-family: var(--font-mono); font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dd-muted); margin-bottom: 0.5rem; }
+    .card-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.875rem; padding-bottom: 0.875rem; border-bottom: 1px solid color-mix(in srgb, var(--dd-ink) 8%, transparent); }
+    .card-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .card-dot.ink { background: var(--dd-ink); } .card-dot.muted { background: var(--dd-muted); } .card-dot.accent { background: var(--dd-accent); }
+    .card h3 { font-size: 0.875rem; font-weight: 600; }
+    .card p, .card ul { color: var(--dd-muted); font-size: 0.8125rem; line-height: 1.55; list-style: none; }
+    .card li { margin-bottom: 0.3rem; padding-left: 0.875rem; position: relative; }
+    .card li::before { content: '—'; position: absolute; left: 0; color: color-mix(in srgb, var(--dd-ink) 25%, transparent); font-size: 0.75rem; }
+    .footer { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid color-mix(in srgb, var(--dd-ink) 10%, transparent); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--dd-soft); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+
+    /* Radius rides the token; the literal rx attribute stays as a Safari fallback. */
+    .dd-node      { rx: var(--dd-radius-node); }
+    .dd-tag       { rx: var(--dd-radius-tag); }
+    .dd-container { rx: var(--dd-radius-container); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <p class="header-eyebrow">Contrast · Diagram Design</p>
+      <h1>Product platform · before / after</h1>
+      <p class="subtitle">Same three teams, same column positions, both panels. Today each team owns its own Auth/Billing/Audit stack; proposed, all three consume one shared Platform Core instead. The panels are structurally identical except for that one difference — that's what makes it legible as a claim, not just two unrelated diagrams.</p>
+    </div>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1000 344" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="contrast-full-title contrast-full-desc">
+      <title id="contrast-full-title">Product platform, before and after sharing a platform core</title>
+      <desc id="contrast-full-desc">Today, three product teams each run their own Auth, Billing, and Audit services. Proposed, the same three teams consume one shared Platform Core instead.</desc>
+      <defs>
+        <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.9" fill="color-mix(in srgb, var(--dd-ink) 10%, transparent)"/>
+        </pattern>
+        <marker id="arr-muted" markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto">
+          <path d="M0 0 L7 3 L0 6 Z" fill="var(--dd-muted)"/>
+        </marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="var(--dd-paper)"/>
+      <rect width="100%" height="100%" fill="url(#dots)" opacity="0.55"/>
+
+      <!-- Divider -->
+      <line x1="500" y1="40" x2="500" y2="304" stroke="var(--dd-rule-solid)" stroke-width="1"/>
+
+      <!-- Panel state labels — neutral, not judgements -->
+      <text x="60" y="56" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.18em">TODAY</text>
+      <line x1="40" y1="64" x2="480" y2="64" stroke="var(--dd-rule)" stroke-width="0.8"/>
+      <text x="540" y="56" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.18em">PROPOSED</text>
+      <line x1="520" y1="64" x2="960" y2="64" stroke="var(--dd-rule)" stroke-width="0.8"/>
+
+      <!-- TODAY: three teams, each owning its own stack — no connectors needed,
+           ownership is implied by column layout alone. -->
+      <rect x="60" y="80" width="120" height="24" rx="4" class="dd-node" fill="var(--dd-wash-3)" stroke="var(--dd-soft)" stroke-width="0.8"/>
+      <text x="120" y="96" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.04em">Team A</text>
+      <rect x="200" y="80" width="120" height="24" rx="4" class="dd-node" fill="var(--dd-wash-3)" stroke="var(--dd-soft)" stroke-width="0.8"/>
+      <text x="260" y="96" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.04em">Team B</text>
+      <rect x="340" y="80" width="120" height="24" rx="4" class="dd-node" fill="var(--dd-wash-3)" stroke="var(--dd-soft)" stroke-width="0.8"/>
+      <text x="400" y="96" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.04em">Team C</text>
+
+      <rect x="60" y="128" width="120" height="48" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="76" y="140" fill="var(--dd-muted)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">SVC</text>
+      <text x="76" y="160" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif">Auth</text>
+      <rect x="60" y="192" width="120" height="48" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="76" y="204" fill="var(--dd-muted)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">SVC</text>
+      <text x="76" y="224" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif">Billing</text>
+      <rect x="60" y="256" width="120" height="48" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="76" y="268" fill="var(--dd-muted)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">SVC</text>
+      <text x="76" y="288" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif">Audit</text>
+
+      <rect x="200" y="128" width="120" height="48" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="216" y="140" fill="var(--dd-muted)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">SVC</text>
+      <text x="216" y="160" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif">Auth</text>
+      <rect x="200" y="192" width="120" height="48" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="216" y="204" fill="var(--dd-muted)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">SVC</text>
+      <text x="216" y="224" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif">Billing</text>
+      <rect x="200" y="256" width="120" height="48" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="216" y="268" fill="var(--dd-muted)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">SVC</text>
+      <text x="216" y="288" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif">Audit</text>
+
+      <rect x="340" y="128" width="120" height="48" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="356" y="140" fill="var(--dd-muted)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">SVC</text>
+      <text x="356" y="160" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif">Auth</text>
+      <rect x="340" y="192" width="120" height="48" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="356" y="204" fill="var(--dd-muted)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">SVC</text>
+      <text x="356" y="224" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif">Billing</text>
+      <rect x="340" y="256" width="120" height="48" rx="6" class="dd-node" fill="var(--dd-node-white)" stroke="var(--dd-ink)" stroke-width="1"/>
+      <text x="356" y="268" fill="var(--dd-muted)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">SVC</text>
+      <text x="356" y="288" fill="var(--dd-ink)" font-size="12" font-weight="600" font-family="'DM Sans', sans-serif">Audit</text>
+
+      <!-- PROPOSED: same three teams, same column positions — now consuming one
+           shared core instead of owning their own stack. The single difference. -->
+      <rect x="540" y="80" width="120" height="24" rx="4" class="dd-node" fill="var(--dd-wash-3)" stroke="var(--dd-soft)" stroke-width="0.8"/>
+      <text x="600" y="96" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.04em">Team A</text>
+      <rect x="680" y="80" width="120" height="24" rx="4" class="dd-node" fill="var(--dd-wash-3)" stroke="var(--dd-soft)" stroke-width="0.8"/>
+      <text x="740" y="96" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.04em">Team B</text>
+      <rect x="820" y="80" width="120" height="24" rx="4" class="dd-node" fill="var(--dd-wash-3)" stroke="var(--dd-soft)" stroke-width="0.8"/>
+      <text x="880" y="96" fill="var(--dd-soft)" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.04em">Team C</text>
+
+      <line x1="600" y1="104" x2="600" y2="128" stroke="var(--dd-muted)" stroke-width="1" marker-end="url(#arr-muted)"/>
+      <line x1="740" y1="104" x2="740" y2="128" stroke="var(--dd-muted)" stroke-width="1" marker-end="url(#arr-muted)"/>
+      <line x1="880" y1="104" x2="880" y2="128" stroke="var(--dd-muted)" stroke-width="1" marker-end="url(#arr-muted)"/>
+
+      <rect x="540" y="128" width="400" height="176" rx="6" class="dd-node" fill="color-mix(in srgb, var(--dd-accent) 7%, transparent)" stroke="var(--dd-accent)" stroke-width="1.6"/>
+      <text x="556" y="144" fill="var(--dd-accent)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SVC · FOCAL</text>
+      <text x="556" y="168" fill="var(--dd-ink)" font-size="16" font-weight="600" font-family="'DM Sans', sans-serif">Platform Core</text>
+      <text x="556" y="188" fill="var(--dd-muted)" font-size="10" font-family="'Geist Mono', monospace">auth · billing · audit</text>
+    </svg>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <p class="eyebrow">WHY IT READS</p>
+        <div class="card-header"><span class="card-dot accent"></span><h3>One difference, structurally isolated</h3></div>
+        <p>Matched columns and matched vertical extent mean the nine-to-one consolidation is the only thing that changed — nothing about the left panel is drawn worse to sell the right one.</p>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-dot ink"></span><h3>Delta ledger</h3></div>
+        <ul><li>9 owned services → 1 shared core</li><li>3 silent ownerships → 3 explicit consumption edges</li><li>Auth, Billing, Audit: same three, now centralized</li></ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-dot muted"></span><h3>Today isn't strawmanned</h3></div>
+        <p>The left panel is drawn exactly as clean as the right — three tidy columns, no clutter added to make the "before" look worse than it is. The argument is the consolidation, not a rigged comparison.</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Product platform · before / after</span>
+      <span>example · schematic skill</span>
+    </div>
+  </div>
+</body>
+</html>

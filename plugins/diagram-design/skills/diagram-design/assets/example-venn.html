@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Good design · Desirable × Feasible × Viable</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dd-paper: #F5F2EC;
+      --dd-paper-2: #EDE9E0;
+      --dd-node-white: #ffffff;
+      --dd-ink: #1B2B3C;
+      --dd-muted: #4A6275;
+      --dd-soft: #6E8799;
+      --dd-rule: rgba(27,43,60,0.14);
+      --dd-rule-solid: #C8C4BB;
+      --dd-accent: #967A3A;
+      --dd-accent-tint: rgba(150,122,58,0.10);
+      --dd-link: #3A5F8B;
+      --dd-series-1: #B0934B;
+      --dd-series-2: #4A6275;
+      --dd-series-3: #7AAE8E;
+      --dd-series-4: #C47A4A;
+      --dd-series-5: #6B5B8B;
+      --dd-wash-2: rgba(27,43,60,0.02);
+      --dd-wash-3: rgba(27,43,60,0.03);
+      --dd-wash-5: rgba(27,43,60,0.05);
+      --dd-wash-10: rgba(74,98,117,0.10);
+      --dd-wash-20: rgba(27,43,60,0.20);
+      --dd-wash-30: rgba(27,43,60,0.30);
+      --dd-radius-node: 2px;
+      --dd-radius-tag: 2px;
+      --dd-radius-container: 4px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--dd-paper);
+      color: var(--dd-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+
+    .frame { max-width: 1200px; width: 100%; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dd-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--dd-ink);
+      margin-bottom: 1.5rem;
+    }
+
+    svg { width: 100%; min-width: 900px; display: block; }
+
+    /* Radius rides the token; the literal rx attribute stays as a Safari fallback. */
+    .dd-node      { rx: var(--dd-radius-node); }
+    .dd-tag       { rx: var(--dd-radius-tag); }
+    .dd-container { rx: var(--dd-radius-container); }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Venn · Diagram Design</p>
+    <h1>Good design · Desirable × Feasible × Viable</h1>
+
+    <svg viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="venn-title venn-desc">
+      <title id="venn-title">Good design · Desirable × Feasible × Viable</title>
+      <desc id="venn-desc">Venn diagram showing desirable, feasible, and viable product qualities intersecting at shippable.</desc>
+        <defs>
+          <!-- Chained clips isolate the all-three intersection: clip to Desirable, then to Feasible, then fill via the third circle. -->
+          <clipPath id="clip-desirable">
+            <circle cx="500" cy="180" r="140"/>
+          </clipPath>
+          <clipPath id="clip-feasible">
+            <circle cx="428" cy="320" r="140"/>
+          </clipPath>
+        </defs>
+
+        <rect width="100%" height="100%" fill="var(--dd-paper)"/>
+
+        <!-- Three set circles (stroke + very-low-opacity tint; tints compound in overlaps) -->
+        <!-- Desirable — top, ink -->
+        <circle cx="500" cy="180" r="140" fill="color-mix(in srgb, var(--dd-ink) 4%, transparent)" stroke="var(--dd-ink)" stroke-width="1"/>
+        <!-- Feasible — bottom-left, muted -->
+        <circle cx="428" cy="320" r="140" fill="color-mix(in srgb, var(--dd-muted) 5%, transparent)" stroke="var(--dd-muted)" stroke-width="1"/>
+        <!-- Viable — bottom-right, soft -->
+        <circle cx="572" cy="320" r="140" fill="color-mix(in srgb, var(--dd-soft) 5%, transparent)" stroke="var(--dd-soft)" stroke-width="1"/>
+
+        <!-- Focal: solid-ink triple intersection (dark fill for white text to read against) -->
+        <g clip-path="url(#clip-desirable)">
+          <g clip-path="url(#clip-feasible)">
+            <circle cx="572" cy="320" r="140" fill="var(--dd-ink)"/>
+          </g>
+        </g>
+
+        <!-- Set labels — positioned INSIDE each circle's non-overlapping lobe, so the diagram reads like a classic Venn -->
+        <!-- Desirable — top lobe (centered inside top of Desirable circle) -->
+        <text x="500" y="96" fill="var(--dd-ink)" font-size="14" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Desirable</text>
+        <text x="500" y="112" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">PEOPLE WANT IT</text>
+
+        <!-- Feasible — bottom-left lobe -->
+        <text x="340" y="386" fill="var(--dd-ink)" font-size="14" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Feasible</text>
+        <text x="340" y="402" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">WE CAN BUILD IT</text>
+
+        <!-- Viable — bottom-right lobe -->
+        <text x="660" y="386" fill="var(--dd-ink)" font-size="14" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Viable</text>
+        <text x="660" y="402" fill="var(--dd-muted)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">BUSINESS SUSTAINS</text>
+
+        <!-- Focal label: white text on the dark intersection -->
+        <text x="500" y="268" fill="var(--dd-node-white)" font-size="14" font-weight="600" font-family="'DM Sans', sans-serif" text-anchor="middle">Shippable</text>
+        <text x="500" y="284" fill="color-mix(in srgb, var(--dd-paper) 75%, transparent)" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">THE SWEET SPOT</text>
+      </svg>
+  </div>
+</body>
+</html>

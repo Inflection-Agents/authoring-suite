@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tenant deployment · region × product (dark)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dd-paper: #0F1A26;
+      --dd-paper-2: #1B2B3C;
+      --dd-node-white: #ffffff;
+      --dd-ink: #F5F2EC;
+      --dd-muted: #C8C4BB;
+      --dd-soft: #A8BFCC;
+      --dd-rule: rgba(245,242,236,0.14);
+      --dd-rule-solid: rgba(200,196,187,0.25);
+      --dd-accent: #D4B97A;
+      --dd-accent-tint: rgba(212,185,122,0.10);
+      --dd-link: #8FB0DC;
+      --dd-series-1: #C8B483;
+      --dd-series-2: #86949F;
+      --dd-series-3: #A5C6AF;
+      --dd-series-4: #D5A483;
+      --dd-series-5: #9B90AD;
+      --dd-wash-2: rgba(245,242,236,0.02);
+      --dd-wash-3: rgba(245,242,236,0.03);
+      --dd-wash-5: rgba(245,242,236,0.05);
+      --dd-wash-10: rgba(200,196,187,0.10);
+      --dd-wash-20: rgba(245,242,236,0.20);
+      --dd-wash-30: rgba(245,242,236,0.30);
+      --dd-radius-node: 2px;
+      --dd-radius-tag: 2px;
+      --dd-radius-container: 4px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--dd-paper);
+      color: var(--dd-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+
+    .frame { max-width: 1200px; width: 100%; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dd-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--dd-ink);
+      margin-bottom: 1.5rem;
+    }
+
+    svg { width: 100%; min-width: 780px; display: block; }
+
+    /* Radius rides the token; the literal rx attribute stays as a Safari fallback. */
+    .dd-node      { rx: var(--dd-radius-node); }
+    .dd-tag       { rx: var(--dd-radius-tag); }
+    .dd-container { rx: var(--dd-radius-container); }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Matrix · Diagram Design</p>
+    <h1>Tenant deployment · region × product</h1>
+
+    <svg viewBox="0 0 840 368" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="matrix-dark-title matrix-dark-desc">
+      <title id="matrix-dark-title">Tenant deployment across region and product, Fission marked as deployed everywhere</title>
+      <desc id="matrix-dark-desc">A 3x3 grid of regions (EU, US, APAC) by product (Certainty, Fission, Beacon), holding tenant counts. The Fission column is marked — it is the only product deployed in every region. EU/Beacon and APAC/Certainty are deliberately empty.</desc>
+
+      <rect width="100%" height="100%" fill="var(--dd-paper)"/>
+
+      <!-- Column headers -->
+      <text x="284" y="64" fill="var(--dd-muted)" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.1em">CERTAINTY</text>
+      <text x="480" y="64" fill="var(--dd-accent)" font-size="9" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.1em">FISSION</text>
+      <text x="676" y="64" fill="var(--dd-muted)" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.1em">BEACON</text>
+
+      <!-- Fission column: the marked claim, one element -->
+      <rect x="392" y="88" width="180" height="240" fill="var(--dd-accent-tint)" stroke="var(--dd-accent)" stroke-width="1"/>
+
+      <!-- Row bands: Certainty column -->
+      <rect x="196" y="88" width="180" height="80" fill="var(--dd-wash-2)"/>
+      <rect x="196" y="168" width="180" height="80" fill="var(--dd-wash-5)"/>
+      <rect x="196" y="248" width="180" height="80" fill="var(--dd-wash-2)"/>
+
+      <!-- Row bands: Beacon column -->
+      <rect x="588" y="88" width="180" height="80" fill="var(--dd-wash-2)"/>
+      <rect x="588" y="168" width="180" height="80" fill="var(--dd-wash-5)"/>
+      <rect x="588" y="248" width="180" height="80" fill="var(--dd-wash-2)"/>
+
+      <!-- Row headers -->
+      <text x="40" y="132" fill="var(--dd-ink)" font-size="11" font-weight="600" font-family="'DM Sans', sans-serif">EU cell</text>
+      <text x="40" y="212" fill="var(--dd-ink)" font-size="11" font-weight="600" font-family="'DM Sans', sans-serif">US cell</text>
+      <text x="40" y="292" fill="var(--dd-ink)" font-size="11" font-weight="600" font-family="'DM Sans', sans-serif">APAC cell</text>
+
+      <!-- EU / Certainty: 2 tenants -->
+      <rect x="264" y="120" width="16" height="16" rx="2" fill="var(--dd-wash-10)" stroke="var(--dd-ink)" stroke-width="0.8"/>
+      <rect x="288" y="120" width="16" height="16" rx="2" fill="var(--dd-wash-10)" stroke="var(--dd-ink)" stroke-width="0.8"/>
+
+      <!-- EU / Fission: 1 tenant -->
+      <rect x="472" y="120" width="16" height="16" rx="2" fill="var(--dd-paper-2)" stroke="var(--dd-accent)" stroke-width="0.8"/>
+
+      <!-- EU / Beacon: deliberately empty -->
+      <text x="676" y="132" fill="var(--dd-soft)" font-size="12" text-anchor="middle" font-family="'DM Sans', sans-serif">—</text>
+
+      <!-- US / Certainty: 1 tenant -->
+      <rect x="276" y="200" width="16" height="16" rx="2" fill="var(--dd-wash-10)" stroke="var(--dd-ink)" stroke-width="0.8"/>
+
+      <!-- US / Fission: 2 tenants -->
+      <rect x="460" y="200" width="16" height="16" rx="2" fill="var(--dd-paper-2)" stroke="var(--dd-accent)" stroke-width="0.8"/>
+      <rect x="484" y="200" width="16" height="16" rx="2" fill="var(--dd-paper-2)" stroke="var(--dd-accent)" stroke-width="0.8"/>
+
+      <!-- US / Beacon: 1 tenant -->
+      <rect x="668" y="200" width="16" height="16" rx="2" fill="var(--dd-wash-10)" stroke="var(--dd-ink)" stroke-width="0.8"/>
+
+      <!-- APAC / Certainty: deliberately empty -->
+      <text x="284" y="292" fill="var(--dd-soft)" font-size="12" text-anchor="middle" font-family="'DM Sans', sans-serif">—</text>
+
+      <!-- APAC / Fission: 1 tenant -->
+      <rect x="472" y="280" width="16" height="16" rx="2" fill="var(--dd-paper-2)" stroke="var(--dd-accent)" stroke-width="0.8"/>
+
+      <!-- APAC / Beacon: 1 tenant -->
+      <rect x="668" y="280" width="16" height="16" rx="2" fill="var(--dd-wash-10)" stroke="var(--dd-ink)" stroke-width="0.8"/>
+
+      <!-- Legend -->
+      <line x1="40" y1="344" x2="768" y2="344" stroke="color-mix(in srgb, var(--dd-ink) 10%, transparent)" stroke-width="0.8"/>
+      <text x="40" y="360" fill="var(--dd-muted)" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.18em">LEGEND</text>
+
+      <rect x="200" y="352" width="16" height="16" rx="2" fill="var(--dd-wash-10)" stroke="var(--dd-ink)" stroke-width="0.8"/>
+      <text x="224" y="364" fill="var(--dd-muted)" font-size="8.5" font-family="'DM Sans', sans-serif">One tenant, deployed</text>
+
+      <text x="440" y="364" fill="var(--dd-soft)" font-size="12" font-family="'DM Sans', sans-serif">—</text>
+      <text x="460" y="364" fill="var(--dd-muted)" font-size="8.5" font-family="'DM Sans', sans-serif">Deliberately not deployed</text>
+
+      <rect x="672" y="352" width="16" height="16" fill="var(--dd-accent-tint)" stroke="var(--dd-accent)" stroke-width="1"/>
+      <text x="696" y="364" fill="var(--dd-muted)" font-size="8.5" font-family="'DM Sans', sans-serif">Marked column — the claim</text>
+    </svg>
+  </div>
+</body>
+</html>

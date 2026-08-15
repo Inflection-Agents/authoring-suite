@@ -5,13 +5,14 @@ next to either.
 
 | Skill | Answers |
 |---|---|
-| [`diagram-design`](https://github.com/Inflection-Agents/diagram-design) | What does this system/flow/comparison look like? |
+| [`diagram-design`](plugins/diagram-design) | What does this system/flow/comparison look like? |
 | [`narrative-spine`](plugins/narrative-spine) | Does the deck's title sequence carry the argument? |
 | [`writing-voice`](plugins/writing-voice) | Does the prose sound like it, or like an LLM wrote it? |
 
-`diagram-design` lives in its own repo and keeps its own release cadence — this marketplace
-just points at it, so installing the suite doesn't fork or duplicate it. `narrative-spine` and
-`writing-voice` live here directly.
+All three live in this repo as independently installable plugins under one marketplace.
+`diagram-design` was previously its own repo (`Inflection-Agents/diagram-design`, now
+archived); this repo carries it forward as a fresh copy, not a history merge, so the pre-2026-08
+commit-by-commit build trail lives in the archived repo, not here.
 
 ## Install
 
@@ -30,6 +31,7 @@ next package update. Clone the repo and symlink the inner skill you want to cust
 ```bash
 git clone git@github.com:Inflection-Agents/authoring-suite.git ~/code/authoring-suite
 
+ln -s ~/code/authoring-suite/plugins/diagram-design/skills/diagram-design ~/.claude/skills/diagram-design
 ln -s ~/code/authoring-suite/plugins/narrative-spine/skills/narrative-spine ~/.claude/skills/narrative-spine
 ln -s ~/code/authoring-suite/plugins/writing-voice/skills/writing-voice ~/.claude/skills/writing-voice
 ```
@@ -37,6 +39,12 @@ ln -s ~/code/authoring-suite/plugins/writing-voice/skills/writing-voice ~/.claud
 ## How the three compose
 
 `narrative-spine` structures a deck's argument and calls `diagram-design` for every picture.
-`writing-voice` isn't deck-specific — it applies to the body text inside a deck, a whitepaper,
+`writing-voice` isn't deck-specific: it applies to the body text inside a deck, a whitepaper,
 a commit message, or a chat response, anywhere prose gets written. Use it standalone, or let
 `narrative-spine` invoke it when auditing a deck's body content.
+
+## diagram-design's own CI
+
+`plugins/diagram-design` carries its own gate suite (`.github/workflows/diagram-design-ci.yml`),
+scoped to that path so it only runs when that plugin changes. Run its gates locally from inside
+the plugin's own directory: see `plugins/diagram-design/CONTRIBUTING.md`.
