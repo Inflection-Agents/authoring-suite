@@ -1,0 +1,29 @@
+{
+  "name": "authoring-suite",
+  "metadata": {
+    "description": "Communication and authoring skills that compose: diagram-design for pictures, narrative-spine for a deck's argument structure, writing-voice for the prose voice underneath both."
+  },
+  "owner": {
+    "name": "Inflection Agents"
+  },
+  "plugins": [
+    {
+      "name": "narrative-spine",
+      "source": "./plugins/narrative-spine"
+    },
+    {
+      "name": "writing-voice",
+      "source": "./plugins/writing-voice"
+    },
+    {
+      "name": "diagram-design",
+      "description": "Create branded architecture, flowchart, sequence, lineage, deployment, matrix, and other diagrams as standalone HTML/SVG/PNG. Maintained in its own repo; referenced here so one marketplace add installs the whole suite.",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/Inflection-Agents/diagram-design.git",
+        "sha": "2c5ff50c253475d9e7246d54e2b54b8432cdeedb"
+      },
+      "homepage": "https://github.com/Inflection-Agents/diagram-design"
+    }
+  ]
+}

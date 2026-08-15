@@ -1,0 +1,19 @@
+{
+  "name": "writing-voice",
+  "description": "Enforce a specific, audience-tailored prose voice and catch LLM writing slop — banned words, em dashes, hedging, rule-of-three padding, tacked-on clauses — in chat responses, docs, commit messages, and deck body content.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Inflection Agents",
+    "url": "https://github.com/Inflection-Agents"
+  },
+  "homepage": "https://github.com/Inflection-Agents/authoring-suite",
+  "repository": "https://github.com/Inflection-Agents/authoring-suite",
+  "license": "MIT",
+  "keywords": [
+    "writing",
+    "style-guide",
+    "editing",
+    "prose",
+    "slop-detection"
+  ]
+}

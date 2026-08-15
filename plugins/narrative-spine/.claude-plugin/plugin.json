@@ -1,0 +1,19 @@
+{
+  "name": "narrative-spine",
+  "description": "Build executive presentations, board decks, strategy decks, technical proposals, and whitepapers around a title-driven narrative spine, where reading only the slide titles top to bottom gives the whole argument as a persuasive paragraph.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Inflection Agents",
+    "url": "https://github.com/Inflection-Agents"
+  },
+  "homepage": "https://github.com/Inflection-Agents/authoring-suite",
+  "repository": "https://github.com/Inflection-Agents/authoring-suite",
+  "license": "MIT",
+  "keywords": [
+    "decks",
+    "presentations",
+    "narrative",
+    "whitepapers",
+    "executive-summary"
+  ]
+}
