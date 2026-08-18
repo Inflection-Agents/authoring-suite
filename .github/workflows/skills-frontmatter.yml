@@ -1,0 +1,61 @@
+name: Skill frontmatter
+
+# Marketplace-wide, deliberately. The two diagram-design workflows are path-filtered to
+# `plugins/diagram-design/**`, so writing-voice and narrative-spine had no CI at all --
+# which is how a SKILL.md with unparseable frontmatter reached main. `claude plugin
+# validate --strict` does not close this: it validates the marketplace and plugin
+# manifests, not the skill file those manifests point at.
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'plugins/**'
+      - 'scripts/verify-skill-frontmatter.py'
+      - 'scripts/test-verify-skill-frontmatter.py'
+      - '.github/workflows/skills-frontmatter.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'plugins/**'
+      - 'scripts/verify-skill-frontmatter.py'
+      - 'scripts/test-verify-skill-frontmatter.py'
+      - '.github/workflows/skills-frontmatter.yml'
+
+permissions:
+  contents: read
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: "1"
+
+jobs:
+  frontmatter:
+    name: Frontmatter (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        env:
+          GIT_CONFIG_COUNT: "1"
+          GIT_CONFIG_KEY_0: "core.autocrlf"
+          GIT_CONFIG_VALUE_0: "false"
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Every skill's frontmatter parses and identifies itself
+        run: python scripts/verify-skill-frontmatter.py
+
+      - name: The checker behaves (both polarities)
+        run: python scripts/test-verify-skill-frontmatter.py
