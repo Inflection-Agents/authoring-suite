@@ -1,6 +1,6 @@
 ---
 name: writing-voice
-description: Enforce a specific, audience-tailored prose voice and catch LLM writing slop in chat responses, docs, commit messages, PR descriptions, and deck body content. Use whenever prose is being drafted, reviewed, or edited, not just decks. Run the lint script on a draft before treating it as final: the rules alone catch what a human reviewer would flag, the script catches what's easy to miss by eye.
+description: "Enforce a specific, audience-tailored prose voice and catch LLM writing slop in chat responses, docs, commit messages, PR descriptions, and deck body content. Use whenever prose is being drafted, reviewed, or edited, not just decks. Run the lint script on a draft before treating it as final: the rules alone catch what a human reviewer would flag, the script catches what's easy to miss by eye."
 license: MIT
 ---
 
