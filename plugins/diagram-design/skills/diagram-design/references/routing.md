@@ -6,6 +6,33 @@ rule (pattern first, then type) and links here; this file holds the tables thems
 type rows land here as each type ships — `SKILL.md` §3 is touched only once more, for the
 M2.2 routing rewrite.
 
+## First: is this one diagram, or a descent?
+
+Before choosing a type, check the **scope** of the subject. A request to document a whole
+system, product or estate is a descent, not a diagram. One Architecture diagram of an entire
+platform has to choose between showing the parts and showing them legibly, and it loses either
+way.
+
+| The subject is… | Produce |
+|---|---|
+| One flow, one topology, one comparison, one subsystem | A single diagram. Route it below. |
+| A whole system, product, platform or estate | A **set**: a `context` view, a `container` view, and a Zoom expansion per container that earns one |
+
+The vocabulary for a descent already exists and is borrowed from C4 because it is widely
+understood: [`diagram-sets.md`](diagram-sets.md) carries the ladder (`landscape → context →
+container → component → code`, with `deployment` and `dynamic` attaching rather than
+continuing it), [`type-zoom.md`](type-zoom.md) is the mechanism for one hop, and
+`scripts/verify-set.py` holds the levels together. Declare the set: without it nothing checks
+that an element named `Transform` in the container view is the same `Transform` in the
+component view.
+
+Two things make a descent work rather than merely exist:
+
+- **Group containers by what fails together**, not by what the source tree or the deployment
+  manifest happens to call a module. The container view is the one a reader reasons in.
+- **Not every container earns an expansion.** `verify-set.py` reports an element with no child
+  diagram as coverage, not as a failure, precisely so the set stays the size the subject needs.
+
 ## Semantic pattern, then visual type
 
 When behavior, state, enforcement, or risk carries the meaning, first load

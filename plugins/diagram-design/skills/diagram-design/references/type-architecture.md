@@ -2,6 +2,15 @@
 
 **Best for:** system overviews, data-flow diagrams, integration maps, infra topology.
 
+**Scope check before you draw.** Architecture is the right type for one topology: a subsystem,
+a service and its dependencies, one path through a platform. If the subject is a *whole* system
+or estate, this diagram cannot both show the parts and stay legible, and the answer is a descent
+rather than a bigger canvas: a `context` view, this diagram as the `container` view, and a
+[Zoom](type-zoom.md) expansion per container that earns one. See
+[`routing.md`](routing.md#first-is-this-one-diagram-or-a-descent) and declare the set
+([`diagram-sets.md`](diagram-sets.md)).
+
+
 ## Layout conventions
 - Group components by tier or trust boundary (frontend → backend → data; public → private).
 - Primary flow runs left→right or top→down. Pick one and hold it.
