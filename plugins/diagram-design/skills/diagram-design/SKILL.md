@@ -68,6 +68,12 @@ Before drawing, ask: *Would the reader learn more from this than from a well-wri
 
 ## 3. Selection: semantic pattern, then visual type
 
+**Scope first: one diagram, or a descent?** A request to document a *whole* system, product or
+estate is a set, not a picture — a `context` view, a `container` view, and a Zoom expansion per
+container that earns one, declared per [`references/diagram-sets.md`](references/diagram-sets.md)
+so `verify-set.py` can hold the levels together. One diagram is right for one flow, one topology,
+one comparison, one subsystem. `routing.md` opens with this question.
+
 When behavior, state, enforcement, or risk carries the meaning, first load [`references/semantic-patterns.md`](references/semantic-patterns.md) and choose one primary pattern. Then choose the nearest visual type for layout. If no pattern matches, choose the type directly.
 
 **Load [`references/routing.md`](references/routing.md) for both selection tables** — the

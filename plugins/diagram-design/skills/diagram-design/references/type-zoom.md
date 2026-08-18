@@ -23,9 +23,22 @@ grammar for the relationship itself.
 - Failure/exception paths inside the expansion are drawn as real branches (dashed, labeled),
   never hidden — a happy-path-only zoom misrepresents what the step does.
 
+## Across a set, the parent strip is identical or it is nothing
+
+A single Zoom needs the strip to be recognisable. A *set* of them, one per container, needs
+every strip to be **byte-identical** apart from which box is marked. It is the only signal
+telling a reader which box opened, so a strip that drifts between siblings quietly removes the
+reader's place in the descent while still looking correct on any one page.
+
+Hand-copying a forty-line strip across five files is exactly how it drifts. Emit the strip from
+one declaration of the container list, so a rename or a reorder cannot land in four files and
+miss the fifth. `scripts/verify-set.py` check 4 catches a renamed *element id* across diagrams;
+it does not read the strip's geometry, so the single-source discipline is what holds this.
+
 ## Anti-patterns
 - Parent thumbnail small enough that the marked box can't be identified at a glance.
-- Parent redrawn differently from the source diagram it's excerpted from.
+- Parent redrawn differently from the source diagram it's excerpted from, or drifting
+  between sibling expansions in a set.
 - Marking more than one parent element — Zoom asserts detail-of for exactly one thing.
 - Skipping the wedge and relying on position alone to imply "this is what expanded."
 - A caption doing the correspondence's job. If a reader needs the caption to know which box
