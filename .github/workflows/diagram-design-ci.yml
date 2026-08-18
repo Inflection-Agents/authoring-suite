@@ -157,12 +157,12 @@ jobs:
         id: self_check
         run: python scripts/test-self-check.py
 
-      - name: Verify label geometry
+      - name: Verify diagram geometry
         if: always()
         id: geometry
-        run: python scripts/verify-geometry.py --all
+        run: python scripts/verify-geometry.py --all --baseline
 
-      - name: Verify label geometry checker
+      - name: Verify geometry checker
         if: always()
         id: geometry_tests
         run: python scripts/test-verify-geometry.py
@@ -281,8 +281,8 @@ jobs:
           echo "| Optional Motion Contract | ${{ steps.motion.outcome == 'success' && '✅ Passed' || (steps.motion.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Docs & Routing Sync | ${{ steps.docs_sync.outcome == 'success' && '✅ Passed' || (steps.docs_sync.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Packaged Self-Check | ${{ steps.self_check.outcome == 'success' && '✅ Passed' || (steps.self_check.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Label Geometry | ${{ steps.geometry.outcome == 'success' && '✅ Passed' || (steps.geometry.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Label Geometry Checker | ${{ steps.geometry_tests.outcome == 'success' && '✅ Passed' || (steps.geometry_tests.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Diagram Geometry | ${{ steps.geometry.outcome == 'success' && '✅ Passed' || (steps.geometry.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Geometry Checker | ${{ steps.geometry_tests.outcome == 'success' && '✅ Passed' || (steps.geometry_tests.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Skin Generation | ${{ steps.skin_build.outcome == 'success' && '✅ Passed' || (steps.skin_build.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Hex-to-Token Codemod | ${{ steps.codemod.outcome == 'success' && '✅ Passed' || (steps.codemod.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Generated Skin Files | ${{ steps.skins.outcome == 'success' && '✅ Passed' || (steps.skins.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed') }} |" >> $GITHUB_STEP_SUMMARY
