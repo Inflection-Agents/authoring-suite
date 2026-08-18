@@ -440,6 +440,35 @@ Run before producing any diagram.
 - [ ] `viewBox` expanded for the legend strip (~60px)?
 - [ ] Every font size, coord, width, height, gap divisible by 4?
 - [ ] Ran the packaged self-check — `python3 <skill-dir>/scripts/self_check.py <file>` — clean? (Accessible-SVG contract, single-file safety, motion basics; ships with the skill.)
+
+**Measured, not certified.** The three items above about label gaps, masks and attach
+points are geometry: you answer them by measuring, not by recalling what you intended.
+Run the checker and paste its summary line — `0 finding(s)` is evidence, a tick is not.
+
+```
+python3 <skill-dir>/scripts/verify_geometry.py <file>
+```
+
+It reports a label mask clipped by a later node, a mask sitting on the connector it names
+(§6 rule 2), and a node breaking out of its container. Add `--also corner-landing,loose-start`
+for diagrams whose bodies are all real shapes — those two are exact there and have false
+positives on types that anchor a connector beside an icon or a text label.
+
+**One thing it cannot measure.** Text advance needs font metrics, so a name that overruns
+its box is invisible to it. Render the file and let the browser measure that, plus any
+label still covering a stroke:
+
+```js
+document.querySelectorAll('svg').forEach(svg => {
+  const vb = svg.getAttribute('viewBox').split(' ').map(Number)
+  svg.querySelectorAll('text').forEach(t => {
+    const b = t.getBBox()
+    if (b.x + b.width > vb[0] + vb[2] + 2 || b.y + b.height > vb[1] + vb[3] + 2)
+      console.warn('out of bounds:', t.textContent)
+  })
+})
+```
+
 - [ ] If animated, does the complete static/no-JS frame work, does reduced motion hide/disable playback, and is the controller copied verbatim from `template-motion.html`? In this repository, also run `python3 scripts/verify-motion.py path/to/generated.html` plus the skin linter; from an installed skill, manually check print and static-query states on top of the self-check.
 
 **Typography:**
