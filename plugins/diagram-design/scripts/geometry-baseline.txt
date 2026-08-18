@@ -1,0 +1,29 @@
+# Grandfather baseline for scripts/verify-geometry.py — seeded 2026-08-17 at v2.4.
+#
+# Every file below carries a finding from a check that did not exist before v2.4:
+# `masked-edge` (a label mask sitting ON the connector it names, against SKILL.md §6
+# rule 2) and `broken-out` (a node whose body leaves the container holding its centre).
+# ADR 0005 deferred the first of those for needing stroke geometry rather than
+# rectangles; ADR 0011 supplies that geometry, and these 46 findings across 6 unique
+# diagrams are what it found on the day it was switched on.
+#
+# Fixing them is a redraw of hand-placed label coordinates in three variants each, not a
+# lint fix, so it is tracked separately rather than bundled into the PR that added the
+# checker. This list only ever shrinks: a file leaves it by becoming geometry-clean
+# through ordinary editing, never by being re-added to dodge a fresh violation — that
+# use is what CONTRIBUTING.md's baseline rule forbids.
+#
+example-architecture-dark.html
+example-architecture-full.html
+example-architecture.html
+example-class-dark.html
+example-class-full.html
+example-class.html
+example-datalake-dark.html
+example-datalake-full.html
+example-datalake.html
+example-import-drawio.html
+example-import-mermaid.html
+example-swimlane-dark.html
+example-swimlane-full.html
+example-swimlane.html

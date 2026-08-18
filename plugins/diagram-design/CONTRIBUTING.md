@@ -54,8 +54,8 @@ The helper refuses to run if the Claude and Codex versions already differ. If an
 | Every shipped motion template/example | `python3 scripts/verify-motion.py --shipped` |
 | Docs/routing sync (description hooks, gallery reachability, README tree) | `python3 scripts/verify-docs-sync.py` |
 | Packaged output self-check behaves (pass + adversarial cases) | `python3 scripts/test-self-check.py` |
-| Label masks are never clipped by a node painted after them | `python3 scripts/verify-geometry.py --all` |
-| Label geometry checker behaves (pass + adversarial cases) | `python3 scripts/test-verify-geometry.py` |
+| Diagram geometry: clipped masks, labels sitting on their connector, nodes breaking out of a container | `python3 scripts/verify-geometry.py --all --baseline` |
+| Geometry checker behaves (both polarities, every check) | `python3 scripts/test-verify-geometry.py` |
 | Skin generation from the style guide (contract coverage, both variants) | `python3 scripts/test-build-skins.py` |
 | Hex-to-token codemod (packed declarations, variant detection, `color-mix` exactness) | `python3 scripts/test-migrate-to-tokens.py` |
 | Generated skin files are up to date (`assets/skins/active-*.tokens.css`) | `python3 scripts/build-skins.py` then `git diff --exit-code` on `skills/diagram-design/assets/skins/` |
@@ -93,7 +93,7 @@ python3 scripts/test-plugin-package.py \
   && python3 scripts/test-verify-motion.py \
   && python3 scripts/verify-docs-sync.py \
   && python3 scripts/test-self-check.py \
-  && python3 scripts/verify-geometry.py --all \
+  && python3 scripts/verify-geometry.py --all --baseline \
   && python3 scripts/test-verify-geometry.py \
   && python3 scripts/test-build-skins.py \
   && python3 scripts/test-migrate-to-tokens.py \
@@ -121,7 +121,8 @@ python3 scripts/test-plugin-package.py \
 - **`verify-plugin-package.py`:** run the bump helper if the versions did not increase. If packaging validation fails, keep both marketplaces pointed at the repository root and keep the shared skill at `skills/diagram-design/SKILL.md`.
 - **`lint-skin.py`:** the failure message names the file, line, and category (`color`, `font-family`, `a11y`, `external-asset`, `pure-black`, `script`). Colors must come from the palette in `skills/diagram-design/references/style-guide.md` and should be bound through the `--dd-*` token contract (see below); fonts from the allowed list; diagrams must satisfy the accessible SVG contract (see below). The linter also requires the SHA-pinned controller from `template-motion.html` verbatim and rejects remote resources, CSS `@import`, non-fragment CSS `url()`, event handlers, `srcdoc`, executable URLs, and extra scripts.
 - **`verify-*.py`:** the extractor's real behavior no longer matches its fixture or the documentation, or the reference/command/prompt wiring drifted. Fix the source of truth — do not widen a test to avoid a failure.
-- **`verify-geometry.py`:** a label mask overlaps a node declared later in the document, so the node fill clips the label at render time. Move the label to a free segment of its connector — keep the 6–10px gap from the stroke required by SKILL.md §6, and do not shrink the mask to sneak under the check.
+- **`verify-geometry.py`:** one of three defects. `clipped-mask` — a label mask overlaps a node declared later in the document, so the node fill clips the label at render time. `masked-edge` — a label mask sits on the connector it names instead of the 6–10px clear SKILL.md §6 rule 2 requires, so the label hides its own arrow. `broken-out` — a node's body leaves the container holding its centre. Move the label to a free segment of its connector, or resize the box; do not shrink the mask to sneak under the check. The predicates ship with the skill in `skills/diagram-design/scripts/verify_geometry.py` so authors can measure their own output (ADR 0011); this script is the CI entry point over the shipped assets.
+- **`geometry-baseline.txt`:** the grandfather list for the checks added in v2.4, under the same rule as `grid-baseline.txt` — it only ever shrinks. Never add a file to dodge a fresh violation.
 - **Icon assets:** you changed `scripts/vendor/icons/` or `scripts/build-icons.py` and the generated files went stale. Rerun `python3 scripts/build-icons.py` and commit the regenerated files.
 - **Skin assets:** you changed a token table in `references/style-guide.md` and the generated skins went stale. Rerun `python3 scripts/build-skins.py` and commit the regenerated files. Never hand-edit `assets/skins/*.tokens.css` — `style-guide.md` is the source of truth.
 

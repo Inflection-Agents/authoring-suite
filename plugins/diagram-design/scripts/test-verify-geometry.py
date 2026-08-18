@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Adversarial tests for the label geometry verifier (verify-geometry.py)."""
+"""Adversarial tests for the geometry verifier (scripts/verify-geometry.py).
+
+Every check carries both polarities: the defect must be reported, and the legal case that
+resembles it must not be. Since v2.4 the predicates live in the shipped skill module and
+this wrapper re-exports them, so these tests target the same code an installed plugin
+runs (ADR 0011).
+"""
 
 from __future__ import annotations
 
@@ -39,11 +45,11 @@ def main() -> int:
     module = load_verifier()
     failures: list[str] = []
 
-    def check(label: str, source: str, expect_findings: int) -> None:
+    def check(label: str, source: str, expect_findings: int, checks=None) -> None:
         with tempfile.TemporaryDirectory() as scratch:
             candidate = Path(scratch) / "candidate.html"
             candidate.write_text(source, encoding="utf-8")
-            findings = module.check(candidate)
+            findings = module.check(candidate, checks)
         if len(findings) != expect_findings:
             failures.append(
                 f"{label}: expected {expect_findings} finding(s), got "
@@ -52,8 +58,8 @@ def main() -> int:
         else:
             print(f"OK: {label}")
 
-    def check_file(label: str, path: Path, expect_findings: int) -> None:
-        findings = module.check(path)
+    def check_file(label: str, path: Path, expect_findings: int, checks=None) -> None:
+        findings = module.check(path, checks)
         if len(findings) != expect_findings:
             failures.append(
                 f"{label}: expected {expect_findings} finding(s), got "
@@ -99,9 +105,69 @@ def main() -> int:
         0,
     )
 
-    check_file("shipped architecture example", ARCHITECTURE, 0)
-    check_file("shipped swimlane example", SWIMLANE, 0)
-    check_file("shipped zoned example", ZONED, 0)
+    clipped = ["clipped-mask"]
+    check_file("shipped architecture example", ARCHITECTURE, 0, clipped)
+    check_file("shipped swimlane example", SWIMLANE, 0, clipped)
+    check_file("shipped zoned example", ZONED, 0, clipped)
+
+    # ── masked-edge (SKILL.md §6 rule 2, the geometry ADR 0005 deferred) ─────────────
+    stroke = ('<path d="M 100,144 H 300" fill="none" stroke="#888" '
+              'marker-end="url(#arrow)"/>')
+    check(
+        "label mask sitting on its own connector",
+        document(stroke + '<rect x="180" y="138" width="48" height="12" fill="#fff"/>'),
+        1,
+        ["masked-edge"],
+    )
+    check(
+        "label mask cleared 8px above the same connector",
+        document(stroke + '<rect x="180" y="124" width="48" height="12" fill="#fff"/>'),
+        0,
+        ["masked-edge"],
+    )
+    # A curve's endpoints are exact even though its interior is flattened, so an elbow
+    # is caught the same way a straight run is.
+    elbow = ('<path d="M 100,200 H 180 Q 188,200 188,208 V 260" fill="none" '
+             'stroke="#888" marker-end="url(#arrow)"/>')
+    check(
+        "label mask sitting on an elbow's horizontal run",
+        document(elbow + '<rect x="130" y="194" width="40" height="12" fill="#fff"/>'),
+        1,
+        ["masked-edge"],
+    )
+    # A path with no marker is a body, not a connector, and never triggers the check.
+    check(
+        "mask over a shape outline rather than a connector",
+        document('<path d="M 100,144 H 300" fill="none" stroke="#888"/>'
+                 + '<rect x="180" y="138" width="48" height="12" fill="#fff"/>'),
+        0,
+        ["masked-edge"],
+    )
+
+    # ── broken-out ──────────────────────────────────────────────────────────────────
+    check(
+        "node breaking out of the container holding its centre",
+        document(zone + '<rect x="200" y="120" width="160" height="64" fill="#fff"/>'),
+        1,
+        ["broken-out"],
+    )
+    check(
+        "node wholly inside that container",
+        document(zone + '<rect x="100" y="60" width="160" height="64" fill="#fff"/>'),
+        0,
+        ["broken-out"],
+    )
+
+    # ── optional checks are off unless asked for ────────────────────────────────────
+    floating = ('<path d="M 400,300 H 460" fill="none" stroke="#888" '
+                'marker-end="url(#arrow)"/>')
+    check("connector in open canvas is silent by default", document(floating), 0)
+    check(
+        "connector in open canvas is reported when requested",
+        document(floating),
+        1,
+        ["loose-start"],
+    )
 
     if failures:
         print("\nFAILURES:")
