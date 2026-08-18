@@ -86,13 +86,16 @@
       <path class="ring" d="M296.715 428 A240 240 0 0 1 296.278 253.118" marker-end="url(#arrow)"/>
       <path class="ring" d="M334.269 188 A240 240 0 0 1 438.870 114.129" marker-end="url(#arrow)"/>
 
-      <!-- Dashed write-backs: station inner edge to 6px before the hub stroke. -->
+      <!-- Dashed write-backs: station inner edge to 8px before the hub stroke. The four
+           diagonals land on the hub's left/right edges, 20px clear of a corner: aimed at
+           the corner they stopped where rx=8 curves the stroke away, so the arrowhead
+           read as floating beside the hub rather than meeting it. -->
       <path class="spoke" d="M520 132 V280" marker-end="url(#arrow-soft)"/>
-      <path class="spoke" d="M672 252 L616 284" marker-end="url(#arrow-soft)"/>
-      <path class="spoke" d="M672 428 L616 396" marker-end="url(#arrow-soft)"/>
+      <path class="spoke" d="M672 252 L628 308" marker-end="url(#arrow-soft)"/>
+      <path class="spoke" d="M672 428 L628 372" marker-end="url(#arrow-soft)"/>
       <path class="spoke" d="M520 548 V400" marker-end="url(#arrow-soft)"/>
-      <path class="spoke" d="M368 428 L424 396" marker-end="url(#arrow-soft)"/>
-      <path class="spoke" d="M368 252 L424 284" marker-end="url(#arrow-soft)"/>
+      <path class="spoke" d="M368 428 L412 372" marker-end="url(#arrow-soft)"/>
+      <path class="spoke" d="M368 252 L412 308" marker-end="url(#arrow-soft)"/>
 
       <!-- Curated spoke labels sit beside the line with an 8px visible gap. -->
       <rect x="532" y="200" width="48" height="16" rx="4" fill="var(--dd-paper)"/>
