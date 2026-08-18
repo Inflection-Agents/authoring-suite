@@ -63,13 +63,97 @@ Set membership is opt-in. A file with no `diagram:` meta is not part of a set an
 
 ---
 
-## What you get
+## What it makes
 
-**32 visual types**, each in three variants (minimal light, minimal dark, full editorial).
-Architecture, Zoom, Deployment, Sequence, State, Flowchart, ER/class, Lineage, Contrast,
-Composition, Swimlane, Timeline, Gantt, Quadrant, Radar, Venn, Pyramid, Tree, Org chart, Layer
-stack, Nested, Loop, Matrix, Medallion, Data flow, DP integration, IT current-state, High-level,
-Process, and bar/line/scatter charts.
+All 32 types ship in three static variants: minimal light, minimal dark, full editorial. Grouped
+below by the question you are answering, because that is how you pick one.
+
+### The descent
+
+<table>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/architecture.png" alt="Architecture"><br><b>Architecture</b><br><sub>Components + connections</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/zoom.png" alt="Zoom"><br><b>Zoom</b><br><sub>One box opened, with the wedge</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/deployment.png" alt="Deployment"><br><b>Deployment</b><br><sub>Where it runs · nested infra</sub></td>
+</tr>
+</table>
+
+### Structure and relationships
+
+<table>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/er.png" alt="ER / class"><br><b>ER / class</b><br><sub>Entities, fields, cardinality</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/lineage.png" alt="Lineage"><br><b>Lineage</b><br><sub>Provenance + breaks-if-changed</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/composition.png" alt="Composition"><br><b>Composition</b><br><sub>Catalog → one assembly</sub></td>
+</tr>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/nested.png" alt="Nested"><br><b>Nested</b><br><sub>Hierarchy by containment</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/tree.png" alt="Tree"><br><b>Tree</b><br><sub>Parent → children</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/org-chart.png" alt="Org chart"><br><b>Org chart</b><br><sub>Ownership + routing</sub></td>
+</tr>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/layers.png" alt="Layer stack"><br><b>Layer stack</b><br><sub>Stacked abstractions</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/dp-security-matrix.png" alt="Matrix"><br><b>Matrix</b><br><sub>Categorical grid · permissions</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/dp-integration.png" alt="DP integration"><br><b>DP integration</b><br><sub>Sources → core → consumers</sub></td>
+</tr>
+</table>
+
+### Behaviour over time
+
+<table>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/sequence.png" alt="Sequence"><br><b>Sequence</b><br><sub>Messages between lifelines</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/state.png" alt="State machine"><br><b>State machine</b><br><sub>States + transitions</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/flowchart.png" alt="Flowchart"><br><b>Flowchart</b><br><sub>Decision logic</sub></td>
+</tr>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/swimlane.png" alt="Swimlane"><br><b>Swimlane</b><br><sub>Cross-functional flow</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/process.png" alt="Process"><br><b>Process</b><br><sub>Multi-actor workflow</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/data-flow.png" alt="Data flow"><br><b>Data flow</b><br><sub>Role-scoped pipeline steps</sub></td>
+</tr>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/timeline.png" alt="Timeline"><br><b>Timeline</b><br><sub>Events on an axis</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/gantt.png" alt="Gantt"><br><b>Gantt</b><br><sub>Tasks and phases</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/loop.png" alt="Loop"><br><b>Loop</b><br><sub>Flywheel · stations round a hub</sub></td>
+</tr>
+</table>
+
+### Whole pictures and comparisons
+
+<table>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/high-level.png" alt="High-level"><br><b>High-level</b><br><sub>End-to-end stack on a cluster</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/it-state.png" alt="IT current-state"><br><b>IT current-state</b><br><sub>Legacy estate, modernization</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/medallion.png" alt="Medallion"><br><b>Medallion</b><br><sub>Multi-tier data storage</sub></td>
+</tr>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/contrast.png" alt="Contrast"><br><b>Contrast</b><br><sub>Current vs proposed, one delta</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/quadrant.png" alt="Quadrant"><br><b>Quadrant</b><br><sub>Two-axis positioning</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/radar.png" alt="Radar"><br><b>Radar</b><br><sub>Multi-axis comparison</sub></td>
+</tr>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/venn.png" alt="Venn"><br><b>Venn</b><br><sub>Set overlap</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/pyramid.png" alt="Pyramid / funnel"><br><b>Pyramid / funnel</b><br><sub>Ranked tiers or drop-off</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/quadrant-consultant.png" alt="Consultant 2×2"><br><b>Consultant 2×2</b><br><sub>Quadrant preset, named cells</sub></td>
+</tr>
+</table>
+
+### Quantities
+
+<table>
+<tr>
+  <td align="center" width="33%"><img src="docs/screenshots/bar.png" alt="Bar"><br><b>Bar</b><br><sub>Categorical comparison</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/line.png" alt="Line"><br><b>Line</b><br><sub>Trends over time</sub></td>
+  <td align="center" width="33%"><img src="docs/screenshots/scatter.png" alt="Scatter"><br><b>Scatter</b><br><sub>Distribution and correlation</sub></td>
+</tr>
+</table>
+
+**Browse them all:** open [`skills/diagram-design/assets/index.html`](skills/diagram-design/assets/index.html)
+to flip through every type with light / dark / full-editorial tabs.
+
+---
+
+## Beyond the types
 
 **Semantic patterns** describe behaviour separately from layout, so a queue, a policy trace or a
 trust boundary routes to the nearest existing type instead of inflating the type count.
@@ -78,8 +162,7 @@ trust boundary routes to the nearest existing type instead of inflating the type
 skin and reskinning is one `:root` block, not one edit per attribute.
 
 **Brand onboarding.** Point it at a URL and it extracts palette and fonts into
-`references/style-guide.md`, with contrast checked automatically and a receipt naming what it
-took. See [`onboarding.md`](skills/diagram-design/references/onboarding.md).
+`references/style-guide.md`, contrast-checked, with a receipt naming what it took.
 
 **Import, not conversion.** `.drawio` and Mermaid sources are extracted to a structured IR and
 **redrawn** at a chosen format, size and detail level. Source coordinates, colours and shape

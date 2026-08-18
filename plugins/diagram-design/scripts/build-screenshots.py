@@ -10,7 +10,13 @@ rendering is not deterministic enough across platforms to diff. Run it by hand a
 to the skin or to a screenshotted example:
 
     pip install playwright && playwright install chromium
-    python3 scripts/build-screenshots.py
+    python3 scripts/build-screenshots.py               # refresh every existing screenshot
+    python3 scripts/build-screenshots.py zoom deployment   # add or refresh named ones
+
+Naming a stem is how a NEW screenshot gets created. Without it this only ever refreshed
+files that already existed, which meant a type shipped without an image stayed that way:
+the catalog in README.md was missing zoom, deployment, contrast, lineage and composition
+for exactly that reason.
 
 Framing is the `.frame` wrapper (the eyebrow, the h1, the diagram, the legend) at 2x, so every
 image is the same width and crops to content instead of to an arbitrary viewport. The previous
@@ -43,10 +49,19 @@ def main() -> int:
         )
         return 1
 
-    targets = sorted(OUT.glob("*.png"))
+    if len(sys.argv) > 1:
+        targets = [OUT / f"{stem}.png" for stem in sys.argv[1:]]
+        missing = [t for t in targets if not (ASSETS / f"example-{t.stem}.html").exists()]
+        if missing:
+            names = ", ".join(t.stem for t in missing)
+            print(f"no example-<stem>.html for: {names}", file=sys.stderr)
+            return 1
+    else:
+        targets = sorted(OUT.glob("*.png"))
     if not targets:
         print(f"no screenshots to regenerate in {OUT}", file=sys.stderr)
         return 1
+    OUT.mkdir(parents=True, exist_ok=True)
 
     written = 0
     with sync_playwright() as playwright:
