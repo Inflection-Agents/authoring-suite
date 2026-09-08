@@ -135,6 +135,37 @@ with the negated half deleted, the negated half is a crutch, not a device.
 
 Strong when it names a claim after building to it. A tic when denser than that.
 
+## No periphrastic subject
+
+A sentence whose grammatical subject is a placeholder — "the thing X is," "what X does is,"
+"there is a Y that," "it is Y that" — is stalling before the real subject. Find the noun
+buried after "is" and make it the subject. "The thing a capability waits on is a task" becomes
+"The capability waits on a task." Test: if the sentence gets shorter and no less correct with
+the placeholder gone, the placeholder was doing no work.
+
+## State the current fact before its history
+
+When explaining a mechanism, give the net fact in one sentence before any backstory. History
+earns its place only if it changes what the reader does next, otherwise cut it. Collapse a
+chronological build-up ("In the old world X was... It was how... Both jobs landed on...") into
+one sentence carrying the causal link inline: "because," "so," "which meant." A reader who
+needs the history can ask; a reader who doesn't shouldn't have to read four sentences to find
+the one that mattered.
+
+## No re-arguing a settled claim
+
+Once a section establishes a claim, later sections that depend on it cite it, they don't
+re-derive it. A callback names what changed and points back ("see §2," "the companion paper's
+argument," "Figure 3") in one clause; it doesn't reopen the mechanism for a reader who already
+read the earlier section. Test: if a later paragraph's explanation would read identically
+whether or not the earlier section existed, it's re-arguing, not citing, and one of the two
+copies has to go.
+
+A recap section is the common place this creeps in. "What falls away" or "Summary" sections
+name what changed and where it was established; they don't re-explain the mechanism a second
+time. If a recap bullet takes as many sentences as the section it recaps, it stopped being a
+recap.
+
 ## Intensifier and adjective stacking
 
 `very`, `really`, `truly`, `extremely` almost never earn their place. Cut them and the
