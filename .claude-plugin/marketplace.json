@@ -18,6 +18,10 @@
     {
       "name": "diagram-design",
       "source": "./plugins/diagram-design"
+    },
+    {
+      "name": "muse-white-paper",
+      "source": "./plugins/muse-white-paper"
     }
   ]
 }
