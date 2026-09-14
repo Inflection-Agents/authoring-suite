@@ -141,3 +141,13 @@ the spine; record the addition here.
 **Decided:** Ship the spine as approved. Owner's objection stands: titles hedge, the through-line rumbles, the single point to drive home is not yet crisp. Revisit title generation strategy on the next paper; this paper carries the weakness openly.
 **Rejected:** Perfecting the spine now (perfection is the enemy of progress).
 **Raised by:** owner
+
+---
+
+## D-010 — Spine v2 restarts from the audience; three-paper sequence
+
+**Date:** 2026-09-12
+**Question:** v1 spine read detached from a Temporal-comfortable audience; how to proceed?
+**Decided:** New six-title spine starting where the audience lives (running Temporal comfortably), single through-line (the engine comfortable now charges its tax at the next size). THE OTHER SHAPE reframed around push enabling independent version deployments. Three papers sequenced: comparison first, Restate architecture and Temporal architecture after, each with its own title gate. Stripe custom-scaling claim stays out (unverified, no public source found).
+**Rejected:** Patching v1 titles further; writing all three papers at once.
+**Raised by:** owner
