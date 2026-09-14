@@ -131,3 +131,13 @@ the spine; record the addition here.
 **Decided:** Exactly-once vs at-least-once delivery (founder conversation) and Restate's lack of serialization limits print as owner-attested, labeled as such. Admin API registry claim verified at https://docs.restate.dev/admin-api/service/list-services (GET /services returns handlers, deployment_id, revision).
 **Rejected:** Holding the paper for public proof of all three; asserting unattested mechanisms (log-segment tiering) as fact.
 **Raised by:** owner
+
+---
+
+## D-009 — Spine approved with a known flow weakness
+
+**Date:** 2026-09-12
+**Question:** Do the six titles flow as one punch, or hedge across sections?
+**Decided:** Ship the spine as approved. Owner's objection stands: titles hedge, the through-line rumbles, the single point to drive home is not yet crisp. Revisit title generation strategy on the next paper; this paper carries the weakness openly.
+**Rejected:** Perfecting the spine now (perfection is the enemy of progress).
+**Raised by:** owner
