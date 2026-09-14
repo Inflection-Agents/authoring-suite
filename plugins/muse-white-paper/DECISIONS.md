@@ -113,3 +113,21 @@ longer argue after round-one edits).
 **Reversal path:** If the same open break recurs three runs running, it is a
 missing spine section, not a wording problem. Add the section and re-sign
 the spine; record the addition here.
+
+---
+
+## D-007 — Shared PDFs are story inputs, never citations
+
+**Date:** 2026-09-12
+**Question:** May the paper cite the two PDFs (Durable Execution Proposal Jan 2024, Ventures x Restate Q4 2025)?
+**Decided:** No. Both inform the spine; every fact needs an independent public source.
+**Rejected:** Citing them directly (one is confidential-marked, the other's funding numbers contradict themselves).
+**Raised by:** owner
+
+## D-008 — Owner-attested claims and their print status
+
+**Date:** 2026-09-12
+**Question:** How to handle claims the owner confirms from experience that lack public sources?
+**Decided:** Exactly-once vs at-least-once delivery (founder conversation) and Restate's lack of serialization limits print as owner-attested, labeled as such. Admin API registry claim verified at https://docs.restate.dev/admin-api/service/list-services (GET /services returns handlers, deployment_id, revision).
+**Rejected:** Holding the paper for public proof of all three; asserting unattested mechanisms (log-segment tiering) as fact.
+**Raised by:** owner
