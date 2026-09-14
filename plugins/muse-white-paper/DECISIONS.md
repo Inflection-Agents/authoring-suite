@@ -151,3 +151,13 @@ the spine; record the addition here.
 **Decided:** New six-title spine starting where the audience lives (running Temporal comfortably), single through-line (the engine comfortable now charges its tax at the next size). THE OTHER SHAPE reframed around push enabling independent version deployments. Three papers sequenced: comparison first, Restate architecture and Temporal architecture after, each with its own title gate. Stripe custom-scaling claim stays out (unverified, no public source found).
 **Rejected:** Patching v1 titles further; writing all three papers at once.
 **Raised by:** owner
+
+---
+
+## D-011 — v2 draft accepted with reservation
+
+**Date:** 2026-09-12
+**Question:** Is the v2 draft the paper?
+**Decided:** Ship as draft. Owner judges it not quite there but moving; perfection held for later papers.
+**Rejected:** Another revision round now.
+**Raised by:** owner
