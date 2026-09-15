@@ -50,7 +50,7 @@ Capacity planning under a fixed shard count rewards caution over ambition, so gr
 
 ## 4. Continue-As-New keeps long workflows alive by making your team hand-partition what the engine cannot hold.
 
-Histories have a ceiling. The Continue-As-New docs set it plainly: 51,200 events or 50 MB per execution as a hard limit, with a warning at 10,240 events [CITE temporal-continue-as-new]. Payloads add their own walls nearby: 2 MB per payload and 4 MB per gRPC message [CITE temporal-payload-limits]. Long workflows hit these walls by succeeding, one event at a time.
+Histories have a ceiling. The Continue-As-New docs set it plainly: 51,200 events or 50 MB per execution as a hard limit, with a warning at 10,240 events or 10 MB [CITE temporal-continue-as-new]. Payloads add their own walls nearby: 2 MB per payload and 4 MB per gRPC message [CITE temporal-payload-limits]. Long workflows hit these walls by succeeding, one event at a time.
 
 Continue-As-New (the API that closes the current execution and starts a successor with fresh history) is the documented answer. The developer chooses the cut point, copies the needed state into the new run, and chains executions forward. It works. Teams run chains of, for example, dozens of continuations for workflows that live past a year.
 
@@ -84,7 +84,7 @@ A release becomes two running revisions and a draining counter, so the workflow 
 
 Pick the workflow that already hurts. It runs for months. It carries real state. It will survive at least one release mid-flight. Port it straight, without redesigning around either engine's strengths, and run both copies against the same load for, for example, a single quarter.
 
-Watch four named things. First, the version diff: count the branches the Temporal copy adds per release against the deployment entries the Restate copy adds. Second, history size: track event counts toward the 10,240 warning and the 51,200 cap on the Temporal side [CITE temporal-continue-as-new]. Third, release labor: log the hours spent on markers, version sets, continuation boundaries, and shard review. Fourth, recovery behavior: kill a worker mid-run on each side and time the resume.
+Watch four named things. First, the version diff: count the branches the Temporal copy adds per release against the deployment entries the Restate copy adds. Second, history size: track event counts toward the 10,240-event or 10 MB warning and the 51,200 cap on the Temporal side [CITE temporal-continue-as-new]. Third, release labor: log the hours spent on markers, version sets, continuation boundaries, and shard review. Fourth, recovery behavior: kill a worker mid-run on each side and time the resume.
 
 Two mechanics deserve attention during the trial. Idempotency-key attach (a client-supplied key Restate holds for 24 hours so retries rejoin the original invocation) [CITE restate-idempotency] covers the duplicate-submit cases Temporal teams often solve with workflow IDs. Exactly-once delivery in Restate is owner-attested from production use, stated here under that label until the trial confirms it; score it as observed or not, not as doctrine.
 

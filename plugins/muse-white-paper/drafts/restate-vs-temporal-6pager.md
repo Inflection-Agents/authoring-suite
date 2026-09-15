@@ -1,3 +1,5 @@
+> SUPERSEDED by the v2 drafts on the audience-first spine. Kept for history only.
+
 # Restate vs Temporal: 6-Pager Draft (uncommitted, owner review)
 
 ## 1. Distributed teams burn most effort on failure plumbing (owner-observed), so the engine choice is really a staffing decision.

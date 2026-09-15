@@ -63,7 +63,7 @@ A half-page figure displaces close to 230 words.
   1.5 pages total, max 4 figures, none larger than half a page.
 - 2-pager: prose cap 800 minus displacement. Figure cap 0.5 page, max 2
   figures carried over, no new ones.
-- `cut.py` enforces both ledgers. Over words or over area both fail.
+- `cut.py` enforces both ledgers. Over-words fails loud; over-area cannot fire because figures are dropped until the area fits, so area holds by construction.
 
 ## Section 4: Voice elicitation (approved)
 

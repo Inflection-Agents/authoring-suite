@@ -26,7 +26,7 @@ A count chosen when histories were short governs a fleet whose histories are now
 
 ## 4. Continue-As-New keeps long workflows alive by making your team hand-partition what the engine cannot hold.
 
-Histories end at 51,200 events or 50 MB per execution, with a warning at 10,240 events [CITE temporal-continue-as-new]. Payloads add walls at 2 MB per payload and 4 MB per gRPC message [CITE temporal-payload-limits]. Long workflows reach these limits by succeeding.
+Histories end at 51,200 events or 50 MB per execution, with a warning at 10,240 events or 10 MB [CITE temporal-continue-as-new]. Payloads add walls at 2 MB per payload and 4 MB per gRPC message [CITE temporal-payload-limits]. Long workflows reach these limits by succeeding.
 
 Continue-As-New (the API that closes one execution and starts a successor with fresh history) is the documented answer. Your team picks the cut point, writes the state-carry code, and debugs the chain. Signals must find the live successor. Queries must span links the engine stores as separate executions. Both patterns are solvable. Both are yours, which means longevity ships as application code the team owns.
 
