@@ -1,0 +1,21 @@
+{
+  "name": "arch-docs",
+  "description": "Run an architecture documentation engagement end to end, from the first interview to a delivered diagram set. Phases, gates and artifacts for documenting an existing system or a proposed one, keeping a set consistent across many diagrams, many agents and many sessions, and realigning a finished set to shipped code.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Inflection Agents",
+    "url": "https://github.com/Inflection-Agents"
+  },
+  "homepage": "https://github.com/Inflection-Agents/authoring-suite/tree/main/plugins/arch-docs",
+  "repository": "https://github.com/Inflection-Agents/authoring-suite",
+  "license": "MIT",
+  "keywords": [
+    "architecture",
+    "documentation",
+    "c4",
+    "diagrams",
+    "interview",
+    "process",
+    "engagement"
+  ]
+}

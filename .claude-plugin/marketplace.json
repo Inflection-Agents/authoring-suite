@@ -1,7 +1,7 @@
 {
   "name": "authoring-suite",
   "metadata": {
-    "description": "Communication and authoring skills that compose: diagram-design for pictures, narrative-spine for a deck's argument structure, writing-voice for the prose voice underneath both."
+    "description": "Communication and authoring skills that compose: diagram-design for pictures, narrative-spine for a deck's argument structure, writing-voice for the prose voice underneath both, and arch-docs to run a whole architecture documentation engagement across them."
   },
   "owner": {
     "name": "Inflection Agents"
@@ -18,6 +18,10 @@
     {
       "name": "diagram-design",
       "source": "./plugins/diagram-design"
+    },
+    {
+      "name": "arch-docs",
+      "source": "./plugins/arch-docs"
     }
   ]
 }
