@@ -25,6 +25,12 @@ Full list with examples in `references/voice-rules.md`. The shape of it:
   three generic ones. A real contrast beats a scripted one.
 - **Vary sentence length.** Flat medium-medium-medium rhythm is a tell on its own, independent
   of word choice.
+- **No periphrastic subject.** "The thing X is Y" stalls before the real subject; make the real
+  noun the subject instead.
+- **State the current fact before its history.** Backstory earns its place only if it changes
+  what the reader does next; otherwise the net fact comes first, alone.
+- **No re-arguing a settled claim.** A later section cites an earlier one by name; it doesn't
+  re-derive the same mechanism a second time. Recaps name what changed, they don't reopen it.
 - **Concrete over abstract**, grounded in a number or a named artifact before generalizing.
 - **One job per paragraph.** No tacked-on clauses bolting a second claim onto a sentence that
   already made its point.
