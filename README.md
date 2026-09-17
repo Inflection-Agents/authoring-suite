@@ -1,6 +1,6 @@
 # Authoring Suite
 
-Three skills for one job: making a claim land, on a slide, in a paragraph, or in the picture
+Four skills for one job: making a claim land, on a slide, in a paragraph, or in the picture
 next to either.
 
 | Skill | Answers |
@@ -8,8 +8,9 @@ next to either.
 | [`diagram-design`](plugins/diagram-design) | What does this system/flow/comparison look like? |
 | [`narrative-spine`](plugins/narrative-spine) | Does the deck's title sequence carry the argument? |
 | [`writing-voice`](plugins/writing-voice) | Does the prose sound like it, or like an LLM wrote it? |
+| [`arch-docs`](plugins/arch-docs) | What order do I do a whole architecture documentation engagement in? |
 
-All three live in this repo as independently installable plugins under one marketplace.
+All four live in this repo as independently installable plugins under one marketplace.
 `diagram-design` was previously its own repo (`Inflection-Agents/diagram-design`, now
 archived); this repo carries it forward as a fresh copy, not a history merge, so the pre-2026-08
 commit-by-commit build trail lives in the archived repo, not here.
@@ -21,6 +22,7 @@ commit-by-commit build trail lives in the archived repo, not here.
 /plugin install narrative-spine@authoring-suite
 /plugin install writing-voice@authoring-suite
 /plugin install diagram-design@authoring-suite
+/plugin install arch-docs@authoring-suite
 ```
 
 ## Editable install
@@ -34,6 +36,7 @@ git clone git@github.com:Inflection-Agents/authoring-suite.git ~/code/authoring-
 ln -s ~/code/authoring-suite/plugins/diagram-design/skills/diagram-design ~/.claude/skills/diagram-design
 ln -s ~/code/authoring-suite/plugins/narrative-spine/skills/narrative-spine ~/.claude/skills/narrative-spine
 ln -s ~/code/authoring-suite/plugins/writing-voice/skills/writing-voice ~/.claude/skills/writing-voice
+ln -s ~/code/authoring-suite/plugins/arch-docs/skills/arch-docs ~/.claude/skills/arch-docs
 ```
 
 ## How the three compose
@@ -42,6 +45,11 @@ ln -s ~/code/authoring-suite/plugins/writing-voice/skills/writing-voice ~/.claud
 `writing-voice` isn't deck-specific: it applies to the body text inside a deck, a whitepaper,
 a commit message, or a chat response, anywhere prose gets written. Use it standalone, or let
 `narrative-spine` invoke it when auditing a deck's body content.
+
+`arch-docs` sits one level up from all three. It owns the order of a documentation engagement,
+from the first interview to a delivered set, and calls `diagram-design` to draw and
+`writing-voice` for the prose. Reach for it when the deliverable is a whole architecture set
+rather than one picture.
 
 ## diagram-design's own CI
 
