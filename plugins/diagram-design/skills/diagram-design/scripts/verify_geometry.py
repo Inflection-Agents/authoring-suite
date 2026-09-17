@@ -84,8 +84,8 @@ ALL_CHECKS = DEFAULT_CHECKS + OPTIONAL_CHECKS
 SVG_NUM = r"[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?"
 SVG_RE = re.compile(r"<svg\b.*?</svg>", re.IGNORECASE | re.DOTALL)
 RECT_RE = re.compile(
-    r"<rect\b[^>]*?\bx=\"(?P<x>" + SVG_NUM + r")\"\s+y=\"(?P<y>" + SVG_NUM + r")\"\s+"
-    r"width=\"(?P<w>" + SVG_NUM + r")\"\s+height=\"(?P<h>" + SVG_NUM + r")\"",
+    r"<rect\b(?P<attrs>[^>]*?\bx=\"(?P<x>" + SVG_NUM + r")\"\s+y=\"(?P<y>" + SVG_NUM
+    + r")\"\s+width=\"(?P<w>" + SVG_NUM + r")\"\s+height=\"(?P<h>" + SVG_NUM + r")\"[^>]*)",
     re.IGNORECASE,
 )
 PATH_RE = re.compile(r"<path\b(?P<attrs>[^>]*)>", re.IGNORECASE)
@@ -107,11 +107,16 @@ ARITY = {"M": 2, "L": 2, "T": 2, "H": 1, "V": 1, "C": 6, "S": 4, "Q": 4, "A": 7}
 
 
 class Box:
-    __slots__ = ("x", "y", "w", "h", "line", "offset")
+    __slots__ = ("x", "y", "w", "h", "line", "offset", "drawn")
 
-    def __init__(self, x, y, w, h, line, offset):
+    def __init__(self, x, y, w, h, line, offset, drawn=True):
         self.x, self.y, self.w, self.h = x, y, w, h
         self.line, self.offset = line, offset
+        # Whether the rect is a drawn body rather than background. Every node in this
+        # design system carries a stroke or a styling class; a full-bleed paper rect or a
+        # faint lane band carries neither, and treating one as a node makes a connector
+        # crossing it look like a corner landing.
+        self.drawn = drawn
 
     @property
     def right(self):
@@ -179,12 +184,16 @@ def path_points(d: str) -> list[tuple[float, float]]:
 
 
 def parse_rects(svg: str, base_line: int) -> list[Box]:
-    return [
-        Box(float(m.group("x")), float(m.group("y")),
+    out = []
+    for m in RECT_RE.finditer(svg):
+        attrs = m.group("attrs")
+        out.append(Box(
+            float(m.group("x")), float(m.group("y")),
             float(m.group("w")), float(m.group("h")),
-            base_line + svg.count("\n", 0, m.start()), m.start())
-        for m in RECT_RE.finditer(svg)
-    ]
+            base_line + svg.count("\n", 0, m.start()), m.start(),
+            drawn="stroke=" in attrs or "class=" in attrs,
+        ))
+    return out
 
 
 def parse_shapes(svg: str, base_line: int) -> list[Box]:
@@ -276,7 +285,7 @@ def segment_enters(p, q, b: Box) -> bool:
 
 def check_svg(svg: str, base_line: int, name: str, enabled: set[str]) -> list[str]:
     rects = parse_rects(svg, base_line)
-    nodes = [r for r in rects if r.w >= NODE_MIN_W and r.h >= NODE_MIN_H]
+    nodes = [r for r in rects if r.w >= NODE_MIN_W and r.h >= NODE_MIN_H and r.drawn]
     masks = [r for r in rects
              if MASK_MIN_W <= r.w <= MASK_MAX_W and MASK_MIN_H <= r.h <= MASK_MAX_H]
     containers = [r for r in rects
@@ -366,11 +375,15 @@ def check_svg(svg: str, base_line: int, name: str, enabled: set[str]) -> list[st
                 continue
             for frac, box, line in hits:
                 offset = frac * span
-                if offset < CORNER_CLEARANCE or offset > span - CORNER_CLEARANCE:
+                # Report the distance to the NEAREST corner. Reporting the offset from the
+                # edge's start called an 8px violation "60px from a corner", which reads as
+                # a non-issue and is how a real defect gets waved through.
+                nearest = min(offset, span - offset)
+                if nearest < CORNER_CLEARANCE:
                     out.append(
                         f"{name}:{line}: [corner-landing] connector meets node {box}'s "
-                        f"{edge} edge {offset:.0f}px from a corner; fanned connectors "
-                        f"still clear it by {CORNER_CLEARANCE:g}px")
+                        f"{edge} edge {nearest:.0f}px from the nearest corner; fanned "
+                        f"connectors still clear a corner by {CORNER_CLEARANCE:g}px")
             ordered = sorted(h[0] * span for h in hits)
             for a, b in zip(ordered, ordered[1:]):
                 if b - a < FAN_SEPARATION:

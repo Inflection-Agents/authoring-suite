@@ -17,9 +17,11 @@ dollar figure, not "significant improvement."
 ## Engineering
 
 Evidence-first is acceptable, sometimes preferable: a technical reader often wants to verify
-the reasoning before accepting the conclusion. Precision beats brevity: don't simplify a
-technical claim to make it shorter if the simplification loses accuracy. Jargon is fine when
-it's the precise term; it's a failure only when it's vague or decorative.
+the reasoning before accepting the conclusion. But the current state still comes before its
+history: "evidence-first" means reasoning before conclusion, not backstory before fact.
+Precision beats brevity: don't simplify a technical claim to make it shorter if the
+simplification loses accuracy. Jargon is fine when it's the precise term; it's a failure only
+when it's vague or decorative.
 
 ## Product
 

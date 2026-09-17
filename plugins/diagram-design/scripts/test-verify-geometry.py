@@ -68,7 +68,7 @@ def main() -> int:
         else:
             print(f"OK: {label}")
 
-    node = '<rect x="100" y="60" width="160" height="64" rx="6" fill="#f5f5f5"/>'
+    node = '<rect x="100" y="60" width="160" height="64" rx="6" fill="#f5f5f5" stroke="#333"/>'
     badge = '<rect x="108" y="68" width="32" height="12" rx="2" fill="#f5f5f5"/>'
     zone = '<rect x="80" y="40" width="240" height="120" rx="8" fill="#eee"/>'
 
@@ -147,15 +147,30 @@ def main() -> int:
     # ── broken-out ──────────────────────────────────────────────────────────────────
     check(
         "node breaking out of the container holding its centre",
-        document(zone + '<rect x="200" y="120" width="160" height="64" fill="#fff"/>'),
+        document(zone + '<rect x="200" y="120" width="160" height="64" fill="#fff" stroke="#333"/>'),
         1,
         ["broken-out"],
     )
     check(
         "node wholly inside that container",
-        document(zone + '<rect x="100" y="60" width="160" height="64" fill="#fff"/>'),
+        document(zone + '<rect x="100" y="60" width="160" height="64" fill="#fff" stroke="#333"/>'),
         0,
         ["broken-out"],
+    )
+
+    # ── a background band is not a node ─────────────────────────────────────────────
+    # data-flow lays a full-width, 1.8%-opacity lane behind its steps. Counted as a node
+    # it turned every connector crossing it into a corner landing.
+    band = '<rect x="0" y="196" width="728" height="80" fill="#fafafa"/>'
+    crossing = ('<path d="M582 156 H636 Q644 156 644 164 V204" fill="none" stroke="#888" '
+                'marker-end="url(#arrow)"/>')
+    check("a connector crossing an unstroked, unclassed band", document(band + crossing),
+          0, ["corner-landing"])
+    check(
+        "the same band given a stroke, so it IS a body",
+        document(band.replace('fill="#fafafa"', 'fill="#fafafa" stroke="#333"') + crossing),
+        1,
+        ["corner-landing"],
     )
 
     # ── optional checks are off unless asked for ────────────────────────────────────
