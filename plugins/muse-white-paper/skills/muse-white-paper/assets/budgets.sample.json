@@ -1,0 +1,5 @@
+{
+  "six_pager": {"prose_cap": 2400, "figure_cap_pages": 1.5, "max_figures": 4},
+  "two_pager": {"prose_cap": 800, "figure_cap_pages": 0.5, "max_figures": 2},
+  "displacement_per_half_page_words": 230
+}

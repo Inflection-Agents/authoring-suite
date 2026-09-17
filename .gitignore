@@ -2,3 +2,8 @@
 node_modules/
 __pycache__/
 *.pyc
+
+# White-paper output, not plugin material: drafts, rendered figures and built papers
+plugins/muse-white-paper/drafts/
+plugins/muse-white-paper/paper/
+plugins/muse-white-paper/figures/
