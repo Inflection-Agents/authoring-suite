@@ -1,0 +1,21 @@
+{
+  "name": "demo-reel-remotion",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "tokenize": "node scripts/tokenize.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.532",
+    "@remotion/media": "4.0.532",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.532",
+    "shiki": "3.13.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.8",
+    "typescript": "5.9.2"
+  }
+}

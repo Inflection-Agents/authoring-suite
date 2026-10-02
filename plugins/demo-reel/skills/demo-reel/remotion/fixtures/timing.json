@@ -1,0 +1,4 @@
+{"F1": {"duration": 10.0, "cues": {"title": 0.0, "figure": 2.0, "code": 4.0, "run": 6.0, "change": 8.0},
+        "sentences": [{"text": "A change takes five minutes.", "start": 0.0}, {"text": "Here is the design.", "start": 2.0},
+                      {"text": "Here is the rule.", "start": 4.0}, {"text": "Watch it run.", "start": 6.0},
+                      {"text": "Now change it.", "start": 8.0}]}}
