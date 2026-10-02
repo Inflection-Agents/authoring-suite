@@ -55,9 +55,36 @@ def norm(s: str) -> str:
     return " ".join(s.split())
 
 
+_ONES = ("zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen "
+         "seventeen eighteen nineteen").split()
+_TENS = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()
+_NUMBER_WORDS = set(_ONES) | set(_TENS) | {"hundred", "thousand"}
+
+
+def spell(n: int) -> str:
+    """0 to 999,999 in words, without "and": 312 is "three hundred twelve"."""
+    if n < 20:
+        return _ONES[n]
+    if n < 100:
+        return _TENS[n // 10] + ("" if n % 10 == 0 else " " + _ONES[n % 10])
+    if n < 1000:
+        return _ONES[n // 100] + " hundred" + ("" if n % 100 == 0 else " " + spell(n % 100))
+    return spell(n // 1000) + " thousand" + ("" if n % 1000 == 0 else " " + spell(n % 1000))
+
+
+def _spoken(tokens: list[str]) -> list[str]:
+    """Whisper writes "three hundred and twelve" as 312, so both sides spell numbers out and drop the "and"
+    inside a number before they are compared."""
+    out: list[str] = []
+    for t in tokens:
+        out.extend(spell(int(t)).split() if t.isdigit() and int(t) < 10**6 else [t])
+    return [t for i, t in enumerate(out)
+            if not (t == "and" and 0 < i < len(out) - 1 and out[i - 1] in _NUMBER_WORDS and out[i + 1] in _NUMBER_WORDS)]
+
+
 def wer(ref: str, hyp: str) -> float:
     """Word error rate of a transcript against the text that was meant to be spoken."""
-    r, h = norm(ref).split(), norm(hyp).split()
+    r, h = _spoken(norm(ref).split()), _spoken(norm(hyp).split())
     if not r:
         return 0.0 if not h else 1.0
     d = list(range(len(h) + 1))
@@ -67,3 +94,22 @@ def wer(ref: str, hyp: str) -> float:
             cur = min(d[j] + 1, d[j - 1] + 1, prev + (r[i - 1] != h[j - 1]))
             prev, d[j] = d[j], cur
     return d[len(h)] / len(r)
+
+
+def sentence_cut(words: list[dict], window: float, pad: float = 0.2) -> tuple[float, int] | None:
+    """Where to cut a long reference recording so it ends on a complete sentence.
+
+    Returns (seconds to keep, sentences kept): the end of the last sentence-ending word inside the
+    window, plus a short pad. None when no sentence ends inside the window.
+    """
+    cut, sentences, count = None, 0, 0
+    for w in words:
+        if w["word"].rstrip("\"'").endswith((".", "!", "?")):
+            count += 1
+            if w["end"] <= window:
+                cut, sentences = w["end"], count
+    return (round(cut + pad, 3), sentences) if cut is not None else None
+
+
+def first_sentences(text: str, n: int) -> str:
+    return " ".join(re.split(r"(?<=[.!?])\s+", " ".join(text.split()))[:n])

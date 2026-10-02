@@ -25,8 +25,15 @@ cuts: short (about 4 minutes), long (about 10 minutes)
 - the workflow UI's URL per invocation (reconcile)
 
 ## Decisions worth carrying
-- the agent's approval is shown as an API call tagged "stub"
+- the hotel's confirmation is shown as an API call tagged "stub"
+
+## Decided by the agent
+- script.md               2026-10-03  312 words for the short cut, 556 for the long
+- reconcile 1             2026-10-03  the server suspends a waiting run after 1 s, so a restart breaks no connection
 ```
+
+`writing-voice`'s linter calls the ledger bullet-heavy. The ledger is lists on purpose, so that finding is expected
+and needs no fix.
 
 `phase` is one of: kickoff, interview, narrative, script, shots, pack, reconcile, rig, driver, capture, voice,
 compose, review, deliver. `machine` is `author` or `code`. `kit` counts the kits sent, so a second kit is never
@@ -39,6 +46,9 @@ Correct it and say so; do not act on it.
 
 **Only the owner's approval goes under Approved.** An artifact you wrote and nobody has read is not approved. Do not
 write this line on the owner's behalf.
+
+**Decided by the agent** holds every decision the agent made without asking after the narrative, each with its
+reason. The owner reads it at the final watch. A decision the owner reverses moves to Decisions worth carrying.
 
 **Decisions worth carrying** holds rulings that would otherwise live only in a chat window: a renamed scene, a banned
 word, a reconcile ruling. Anything here binds every later phase.

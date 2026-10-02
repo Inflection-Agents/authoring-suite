@@ -23,16 +23,16 @@ sentence re-times the video, and no number appears that did not happen.
 | Kickoff | author | [01](references/01-kickoff.md) | a playback of the job | the owner has corrected it |
 | Interview | author | [02](references/02-interview.md) | answers that shape every scene | no question left that would change a scene |
 | Narrative | author | [03](references/03-narrative.md) | `demo/narrative.md` | the owner has approved it |
-| Script | author | [04](references/04-script.md) | `demo/script.md` | voice lint clean, owner approved |
+| Script | author | [04](references/04-script.md) | `demo/script.md` | voice lint clean, every scene inside its budget |
 | Shot list | author | [05](references/05-shot-list.md) | `demo/shots.yaml` | `verify_shots.py` reports 0 problems |
 | Pack | author | [06](references/06-pack.md) | `demo-kit.zip` | under the transfer limit; skipped on one machine |
-| Reconcile | code | [07](references/07-reconcile.md) | code shots resolved, scenario checked, disagreements listed | the owner has ruled on each |
+| Reconcile | code | [07](references/07-reconcile.md) | code shots resolved, scenario checked, disagreements ruled | every disagreement ruled; a story change goes to the owner |
 | Rig | code | [08](references/08-rig.md) | every tool installed | fixture render and toy proof pass |
 | Driver | code | [09](references/09-driver.md) | the demo driver and reset script | two takes normalize identically |
 | Capture | code | [10](references/10-capture.md) | one take per shot-list `take` | every shot's window fits |
 | Voice | code | [11](references/11-voice.md) | narration per scene, `demo/timing.json` | the pronunciation check passes or failures are listed |
 | Compose | code | [12](references/12-compose.md) | a draft render per cut | `build_props.py` reports 0 problems |
-| Review | code | [13](references/13-review.md) | the checklist pass and the owner's notes applied | the owner signs off |
+| Review | code | [13](references/13-review.md) | the checklist pass and the owner's notes applied | the owner signs off once, for review and publishing |
 | Deliver | code | [14](references/14-deliver.md) | final MP4s, captions, thumbnails, a hand-back note | |
 
 Load one reference when you enter its phase. Do not load them all. When the whole engagement runs on
@@ -51,9 +51,29 @@ anything:
 When the two disagree, the artifacts win and the ledger gets corrected. When there is no ledger,
 offer to write one from what is on disk, then start at the earliest phase whose artifact is missing.
 
+## The owner stops the work four times
+
+The owner decides the story; the agent produces it. The owner stops the work at the kickoff playback, at the end
+of the interview, at the narrative, and once at the end to watch the cuts and sign off on publishing them. Between
+the narrative and that final watch, `/demo-reel:produce` runs every phase without asking. A gate the agent can check
+(the voice lint, `verify_shots.py`, the determinism diff, `build_props.py`, the review checklist) is the agent's to
+pass, and it fixes what fails.
+
+The agent stops early only for a decision that would change the story:
+
+1. A sentence the narration speaks about what the system does would become false.
+2. A value the narrative's scenario table names (an input, an output, the one value the climax changes) would
+   change.
+3. An honesty rule would bend: a badge dropped, a number typed by hand, a speed-up hidden.
+4. A check still fails after the agent's own fixes, such as a scene whose pronunciation fails every retry.
+
+Everything else the agent decides and writes under **Decided by the agent** in the ledger, with the reason: a
+reworded sentence that keeps its claim, a system setting, an order key, a driver pause, a shot's window. The owner
+reads that list at the final watch, where any decision can be reversed.
+
 ## The gates advise, they do not block
 
-State the gate, say what is missing, and ask once. Then do what the owner says. A demo made on one
+For an owner stop, state the gate, say what is missing, and ask once. Then do what the owner says. A demo made on one
 machine skips Pack, and a demo narrated by hand skips the narration engine. What is never skipped is
 `build_props.py`, because it is the step that refuses a video the event log does not support.
 
@@ -79,7 +99,7 @@ Inside this skill, referred to as `<skill>` in every reference:
 
 | Folder | What it holds |
 |---|---|
-| `scripts/` | `verify_shots.py`, `cues.py`, `timing.py`, `build_props.py`, `normalize_events.py`, `captions.py`, `pack.py`, and their tests |
+| `scripts/` | `verify_shots.py`, `cues.py`, `holds.py`, `timing.py`, `build_props.py`, `normalize_events.py`, `captions.py`, `spine_titles.py`, `pack.py`, and their tests |
 | `narration/` | `install.sh qwen` or `elevenlabs`, and `narrate.py`, which voices every scene with word timings |
 | `templates/` | the capture `package.json`, the demo driver, the reset script, the browser recorder and the take runner |
 | `remotion/` | the Remotion starter with five layouts, the tokenizer, and a fixture rendered through the pipeline |

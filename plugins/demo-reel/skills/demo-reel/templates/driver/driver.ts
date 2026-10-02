@@ -1,6 +1,6 @@
 // The demo driver: runs the scenario as a list of steps and logs every event to the take's file.
 // Copy to demo/driver/driver.ts, fill STEPS in phase 09, and run from the repository root:
-//   TAKE=run-1 demo/node_modules/.bin/tsx demo/driver/driver.ts
+//   TAKE=run-1 [SCENARIO=run-1] demo/node_modules/.bin/tsx demo/driver/driver.ts
 // Every event carries `t` (seconds since this process started) and `wall` (Unix seconds); the
 // recorders log only `wall`, and build_props lines the clocks up through `capture-start`.
 import {appendFileSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
@@ -62,9 +62,14 @@ export const mark = (name: string) => emit({kind: 'mark', name});
 
 type Step = {name: string; pauseMs?: number; run: () => Promise<void> | void};
 
-// Fill in phase 09. Each step does its calls and logs what the video should show.
-const STEPS: Step[] = [];
+// Fill in phase 09: one list of steps per scenario, each step doing its calls and logging what the
+// video should show. SCENARIO picks the list and defaults to the take's name, so the two proof takes
+// of one scenario can have names of their own.
+const SCENARIOS: Record<string, Step[]> = {};
 
+const scenario = process.env.SCENARIO ?? take;
+const STEPS = SCENARIOS[scenario];
+if (!STEPS) throw new Error(`no scenario ${scenario}; known: ${Object.keys(SCENARIOS).join(', ')}`);
 emit({kind: 'capture-start'});
 for (const s of STEPS) {
   await s.run();

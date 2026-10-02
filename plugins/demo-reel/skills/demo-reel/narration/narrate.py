@@ -4,6 +4,7 @@
     narrate.py voice --engine qwen --script demo/script.md --out demo/remotion/public/voice \
         --ref demo/voice-ref/ref.wav --ref-text demo/voice-ref/ref.txt [--lexicon demo/lexicon.json]
     narrate.py voice --engine elevenlabs --script demo/script.md --out demo/remotion/public/voice
+    narrate.py holds --script demo/script.md --out demo/remotion/public/voice   # re-place holds, no re-voicing
     narrate.py check-key            # ElevenLabs: is the key there, private, and accepted?
     narrate.py voices               # ElevenLabs: the account's voices, to pick ELEVENLABS_VOICE_ID
     narrate.py clone --name "Owner" --ref demo/voice-ref/ref.wav   # ElevenLabs instant voice clone
@@ -30,6 +31,31 @@ sys.path.insert(0, str(HERE.parent / "scripts"))
 import config  # noqa: E402
 import lexicon as LX  # noqa: E402
 from textutil import chunk, shift, wer  # noqa: E402
+
+
+def finish(scene, out: Path, engine: str, words: list[dict], qc: list) -> float:
+    """Keep the scene as voiced (<id>.raw.wav, <id>.raw.json), then place its holds."""
+    import shutil
+
+    shutil.copyfile(out / f"{scene.id}.wav", out / f"{scene.id}.raw.wav")
+    (out / f"{scene.id}.raw.json").write_text(json.dumps({"engine": engine, "words": words, "qc": qc}, indent=1))
+    return place_holds(scene, out)
+
+
+def place_holds(scene, out: Path) -> float:
+    """Write <id>.wav and <id>.words.json from the raw scene with its holds as silence. Runs again after a hold
+    line changes, with no re-voicing, because it always starts from the raw audio."""
+    import wave
+
+    import holds as HD
+
+    raw = json.loads((out / f"{scene.id}.raw.json").read_text())
+    with wave.open(str(out / f"{scene.id}.raw.wav"), "rb") as w:
+        duration = w.getnframes() / w.getframerate()
+    words, inserts = HD.apply_holds(raw["words"], scene.holds, duration, script_words=scene.text.split())
+    HD.insert_silence(out / f"{scene.id}.raw.wav", out / f"{scene.id}.wav", inserts)
+    (out / f"{scene.id}.words.json").write_text(json.dumps({**raw, "words": words}, indent=1))
+    return duration + sum(s for _, s in inserts)
 
 
 def _scenes(script: Path, only: str | None):
@@ -82,10 +108,10 @@ def voice_qwen(scenes, keep, out: Path, ref: str, ref_text: str, lex: dict, qc: 
             full, overlap = Q.crossfade(base, audio, sr)
             words += shift(heard, (len(base) - overlap) / sr)
         peak = float(np.max(np.abs(full))) or 1.0
-        sf.write(out / f"{scene.id}.wav", (full / peak * 0.89).astype(np.float32), sr)
-        (out / f"{scene.id}.words.json").write_text(json.dumps({"engine": "qwen", "words": words, "qc": report}, indent=1))
+        sf.write(out / f"{scene.id}.wav", (full / peak * 0.89).astype(np.float32), sr, subtype="PCM_16")
+        seconds = finish(scene, out, "qwen", words, report)
         bad = [r["chunk"] for r in report if not r["passed"]]
-        print(f"{scene.id}: {len(full) / sr:.1f}s, {len(report)} chunks" + (f", review chunks {bad}" if bad else ""))
+        print(f"{scene.id}: {seconds:.1f}s, {len(report)} chunks" + (f", review chunks {bad}" if bad else ""))
     return 1 if flagged else 0
 
 
@@ -100,9 +126,8 @@ def voice_elevenlabs(scenes, keep, out: Path, lex: dict, seed: int) -> int:
         words = E.synth(texts[i], out / f"{scene.id}.wav", cfg, seed=seed,
                         previous_text=texts[i - 1] if i else None,
                         next_text=texts[i + 1] if i + 1 < len(texts) else None)
-        (out / f"{scene.id}.words.json").write_text(json.dumps({"engine": "elevenlabs", "words": words, "qc": []}, indent=1))
-        end = words[-1]["end"] if words else 0
-        print(f"{scene.id}: {end:.1f}s, {len(words)} words")
+        seconds = finish(scene, out, "elevenlabs", words, [])
+        print(f"{scene.id}: {seconds:.1f}s, {len(words)} words")
     return 0
 
 
@@ -121,6 +146,10 @@ def main(argv: list[str]) -> int:
     v.add_argument("--wer-threshold", type=float, default=0.12)
     v.add_argument("--retries", type=int, default=2)
     v.add_argument("--seed", type=int, default=1234)
+    h = sub.add_parser("holds")
+    h.add_argument("--script", type=Path, required=True)
+    h.add_argument("--out", type=Path, required=True)
+    h.add_argument("--scenes")
     c = sub.add_parser("clone")
     c.add_argument("--name", required=True)
     c.add_argument("--ref", type=Path, nargs="+", required=True)
@@ -158,6 +187,13 @@ def main(argv: list[str]) -> int:
 
         voice_id = E.clone(a.name, a.ref, config.elevenlabs())
         print(f"created voice {voice_id}; add ELEVENLABS_VOICE_ID={voice_id} to {config.ELEVENLABS_FILE}")
+        return 0
+
+    if a.cmd == "holds":
+        scenes, keep = _scenes(a.script, a.scenes)
+        for scene in scenes:
+            if (keep is None or scene.id in keep) and (a.out / f"{scene.id}.raw.json").exists():
+                print(f"{scene.id}: {place_holds(scene, a.out):.1f}s, {len(scene.holds)} holds")
         return 0
 
     a.out.mkdir(parents=True, exist_ok=True)

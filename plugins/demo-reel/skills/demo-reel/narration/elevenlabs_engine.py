@@ -67,7 +67,8 @@ def mp3_to_wav(mp3: bytes, out_wav: Path) -> None:
         f.write(mp3)
         src = f.name
     try:
-        subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", src, "-ac", "1", "-ar", "24000", str(out_wav)],
+        subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", src, "-ac", "1", "-ar", "24000",
+                        "-c:a", "pcm_s16le", str(out_wav)],
                        check=True)
     finally:
         Path(src).unlink(missing_ok=True)

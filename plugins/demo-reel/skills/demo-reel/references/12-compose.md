@@ -23,6 +23,8 @@ when a cut's real runtime is more than 10% off its target.
 - A recorded window plays at the speed that fits it into the shot, never below 1, and the badge shows that speed.
 - The browser recording is trimmed so it shows the window's first moment on the shot's first frame.
 - Terminal lines, facts, edits and the timer are placed on the take's clock at that speed.
+- A shot shows everything its take logged before its `out` event: facts, terminal lines and edits from earlier shots
+  are on screen from its first frame, so cutting inside one take never empties a pane.
 
 ## A layout the starter lacks
 

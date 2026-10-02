@@ -106,7 +106,7 @@ runtime files live inside the skill (`skills/demo-reel/scripts`, `remotion`, `te
   word timings. So neither engine needs a second transcription to time the cues.
 
 **Kept out:** anything specific to a client or a stack. A workflow engine's UI is one browser source
-among others. Example names in the plugin are neutral (`orders`, `orderTotal`, `payment-gateway`).
+among others. Example names in the plugin are neutral (`bookings`, `nights`, `hotel-api`).
 
 ## Section 3: Data flow, failure handling, testing
 

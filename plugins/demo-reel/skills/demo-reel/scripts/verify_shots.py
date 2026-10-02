@@ -18,6 +18,7 @@ CUE_RE = re.compile(r"\[cue:([^\]]*)\]")
 CUE_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 HEADING_RE = re.compile(r"^##\s+(?P<rest>.*)$")
 SCENE_ID_RE = re.compile(r"^(?P<id>[A-Za-z]+\d+)(?:\s+(?P<title>.*))?$")
+HOLD_RE = re.compile(r"^\s*>\s*hold:\s*(?P<seconds>\d+(?:\.\d+)?)s\s*$")
 TOLERANCE = 0.10
 
 
@@ -43,6 +44,8 @@ def parse_headings(text: str) -> tuple[dict[str, list[str]], list[str]]:
             cues.setdefault(scene, [])
             continue
         if line.lstrip().startswith(">"):
+            if re.match(r"^\s*>\s*hold\b", line) and not HOLD_RE.match(line):
+                problems.append(f"line {n}: hold line '{line.strip()}' must read like '> hold: 3s'")
             continue
         for cue in CUE_RE.findall(line):
             if scene is None:

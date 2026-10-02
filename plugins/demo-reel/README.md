@@ -34,17 +34,24 @@ Apple silicon), and `narration/install.sh elevenlabs` checks an ElevenLabs key k
 | 01 Kickoff | author | playback of the job: subject, audience, cuts, machines | owner corrects the playback |
 | 02 Interview | author | answers from a question bank | nothing left that would change a scene |
 | 03 Narrative | author | `narrative.md`: promise, scenario, scene table per cut | owner approves |
-| 04 Script | author | `script.md`: voiceover with `[cue:...]` markers | voice lint clean, owner approves |
+| 04 Script | author | `script.md`: voiceover with `[cue:...]` markers | voice lint clean, scenes inside budget |
 | 05 Shot list | author | `shots.yaml`: scenes per cut, shots per cue | `verify_shots.py` reports 0 problems |
 | 06 Pack | author | `demo-kit.zip`, size-checked; skipped on one machine | under the transfer limit |
-| 07 Reconcile | code | code shots resolved to tokens, scenario checked against a real run, numbered disagreements | owner rules on each |
+| 07 Reconcile | code | code shots resolved to tokens, scenario checked against a real run, numbered disagreements | each ruled; a story change goes to the owner |
 | 08 Rig | code | every tool installed and proven by the fixture render and the toy take | all green |
 | 09 Driver | code | demo driver, reset script, one events file per take | two takes normalize identically |
 | 10 Capture | code | one take per shot-list `take`, with events and a browser recording | every shot's window fits |
 | 11 Voice | code | narration per scene, `timing.json` | QC passes or failures are listed |
 | 12 Compose | code | `props-<cut>.json`, a draft render per cut | builds with 0 problems, renders |
-| 13 Review | code | checklist pass, owner notes applied | owner signs off |
+| 13 Review | code | checklist pass, owner notes applied | owner signs off once, for review and publishing |
 | 14 Deliver | code | final MP4s, captions, thumbnails, a hand-back note | |
+
+## Four owner stops
+
+The owner stops the work at the kickoff, the interview, the narrative and the final watch. After the narrative,
+`/demo-reel:produce` runs the script through review without asking, and stops early only when a decision would change
+the story: a narrated claim, a scenario value, an honesty rule, or a check that keeps failing. Every other decision
+goes into the ledger for the owner to read at the final watch.
 
 ## What lives where
 

@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import config  # noqa: E402
 import elevenlabs_engine as E  # noqa: E402
 import lexicon as LX  # noqa: E402
-from textutil import chars_to_words, chunk, shift, wer  # noqa: E402
+from textutil import chars_to_words, chunk, first_sentences, sentence_cut, shift, wer  # noqa: E402
 
 
 class Config(unittest.TestCase):
@@ -43,13 +43,13 @@ class Config(unittest.TestCase):
 
 class Lexicon(unittest.TestCase):
     def test_whole_words_only_longest_first(self):
-        lex = {"DTI": "dee tee eye", "DTI ratio": "debt ratio"}
-        self.assertEqual(LX.apply("The DTI ratio and DTIs and pre-DTI.", lex), "The debt ratio and DTIs and pre-DTI.")
+        lex = {"SLA": "ess ell ay", "SLA window": "service window"}
+        self.assertEqual(LX.apply("The SLA window and SLAs and pre-SLA.", lex), "The service window and SLAs and pre-SLA.")
 
     def test_load_reads_respell_only(self):
         p = Path(tempfile.mkdtemp()) / "lexicon.json"
-        p.write_text(json.dumps({"zod": {"ipa": "zɒd", "respell": "zod"}, "x": {"ipa": "ks"}}))
-        self.assertEqual(LX.load(p), {"zod": "zod"})
+        p.write_text(json.dumps({"nginx": {"ipa": "ˈɛndʒɪn ɛks", "respell": "engine x"}, "x": {"ipa": "ks"}}))
+        self.assertEqual(LX.load(p), {"nginx": "engine x"})
 
 
 class Text(unittest.TestCase):
@@ -68,9 +68,54 @@ class Text(unittest.TestCase):
     def test_shift(self):
         self.assertEqual(shift([{"word": "a", "start": 0.1, "end": 0.2}], 1.0), [{"word": "a", "start": 1.1, "end": 1.2}])
 
+    def test_wer_reads_digits_as_the_spoken_number(self):
+        self.assertEqual(wer("A queue of three hundred and twelve, then six hundred and forty.",
+                             "A queue of 312, then 640."), 0.0)
+        self.assertEqual(wer("Fifteen to twenty minutes.", "15 to 20 minutes."), 0.0)
+        self.assertGreater(wer("A queue of three hundred and twelve.", "A queue of 313."), 0.0)
+
     def test_wer(self):
-        self.assertEqual(wer("The DTI is low.", "the dti is low"), 0.0)
+        self.assertEqual(wer("The SLA is met.", "the sla is met"), 0.0)
         self.assertAlmostEqual(wer("one two three four", "one too three four"), 0.25)
+
+
+class ReferenceTrim(unittest.TestCase):
+    words = [{"word": w, "start": s, "end": e} for w, s, e in
+             [("One", 0.0, 0.4), ("two.", 0.5, 9.0), ("Three", 10.0, 10.4), ("four.", 10.5, 28.0),
+              ("Five", 29.0, 29.5), ("six.", 29.6, 33.0)]]
+
+    def test_cut_at_the_last_sentence_end_inside_the_window(self):
+        self.assertEqual(sentence_cut(self.words, 30.0), (28.2, 2))
+
+    def test_no_sentence_end_inside_the_window(self):
+        self.assertIsNone(sentence_cut(self.words[:1] + [{"word": "two", "start": 0.5, "end": 40.0}], 30.0))
+
+    def test_first_sentences(self):
+        self.assertEqual(first_sentences("One two. Three four! Five six?", 2), "One two. Three four!")
+
+
+class Holds(unittest.TestCase):
+    def test_holds_are_placed_from_the_raw_audio_and_can_be_placed_again(self):
+        import struct
+        import wave
+        from types import SimpleNamespace
+
+        import narrate as N
+
+        out = Path(tempfile.mkdtemp())
+        with wave.open(str(out / "S1.wav"), "wb") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(1000)
+            w.writeframes(struct.pack("<3000h", *([500] * 3000)))
+        words = [{"word": "Queue", "start": 0.0, "end": 0.5}, {"word": "312.", "start": 0.6, "end": 1.0},
+                 {"word": "Then", "start": 2.0, "end": 2.5}]
+        scene = SimpleNamespace(id="S1", text="Queue three hundred and twelve. Then", holds=[(1.0, 5)])
+        self.assertEqual(N.finish(scene, out, "qwen", words, []), 4.0)
+        self.assertEqual(N.place_holds(scene, out), 4.0)  # again, from the raw audio, not on top of the first
+        placed = json.loads((out / "S1.words.json").read_text())["words"]
+        self.assertEqual([w["start"] for w in placed], [0.0, 0.6, 3.0])
+        self.assertTrue((out / "S1.raw.wav").exists())
 
 
 class FakeResponse(io.BytesIO):
