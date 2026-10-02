@@ -19,7 +19,12 @@ completion on a machine the author may never see.
 - Climax: one payoff beat, with up to two supporting beats and an optional extra in the long cut.
 - Code on screen: only the code that carries the design. The short cut shows only code that is also
   configuration.
-- Voice: pluggable narration engine: a local cloned voice, a cloud voice or a human recording.
+- Voice: two optional engines behind one command, plus narration recorded by hand. Owner rulings,
+  2026-10-02: the local engine is Qwen3-TTS 1.7B Base through the MLX port, extracted from the owner's
+  `voice-lab` and installed the way voice-lab installs it (`uv`, `mlx-audio`); it needs Apple silicon.
+  The cloud engine is ElevenLabs, using an existing voice ID or an instant voice clone created from the
+  same reference recording. Its key lives in `~/.config/demo-reel/elevenlabs.env` (`chmod 600`),
+  outside every repository and kit; an environment variable overrides it.
 - Machines: the interview, narrative, script and shot list are written where the context is, and
   capture, narration and composition run next to the code. A kit zip carries one half to the other.
   When the whole engagement runs on one machine, including draft review, the pack step is skipped and
@@ -91,6 +96,15 @@ runtime files live inside the skill (`skills/demo-reel/scripts`, `remotion`, `te
 - A toy system (`examples/toy/`) that the rig phase and CI use to prove the whole capture chain.
 - The agent kernel from `arch-docs` plus one rule, and a `failure-modes.md` that grows per engagement.
 
+- An optional narration module (`narration/`): `install.sh qwen|elevenlabs`, and `narrate.py`, which
+  voices every scene and writes `<id>.wav` with `<id>.words.json`. Qwen keeps voice-lab's measured
+  tuning (a 30-second reference window with its transcript trimmed to match, a runaway guard of 11
+  tokens a word, sentence chunks joined with 25 ms crossfades) and its pronunciation check, now with
+  Whisper: a chunk whose word error rate is above 0.12 is re-voiced with the lexicon's respellings, and
+  the accepted chunk's transcript is its word timings. ElevenLabs voices a scene per with-timestamps
+  request, with the neighbouring scenes as context and a fixed seed, and its character timings become
+  word timings. So neither engine needs a second transcription to time the cues.
+
 **Kept out:** anything specific to a client or a stack. A workflow engine's UI is one browser source
 among others. Example names in the plugin are neutral (`orders`, `orderTotal`, `payment-gateway`).
 
@@ -106,7 +120,8 @@ among others. Example names in the plugin are neutral (`orders`, `orderTotal`, `
   started) and `wall` (Unix seconds) on every event: `capture-start`, `capture-end`, `request`,
   `response`, `command`, `edit`, `invocation`, `fact`, `outcome`, `stub`, `mark`. The browser recorder
   adds `recording-start` with `wall` only.
-- `timing.json`: per scene, the audio's duration, each cue's second, and each sentence's start.
+- `timing.json`: per scene, the audio's duration, each cue's second, and each sentence's start, built
+  from each scene's words file, or by Whisper for narration recorded by hand.
 - `props-<cut>.json`: built by `build_props.py`, read by Remotion. Nothing else feeds the render.
 
 **The clocks.** A shot shows its take's window between `in` and `out`. Its speed is the window's
@@ -141,8 +156,11 @@ window's start, converted to driver time through `capture-start`, so every pane 
 
 **Testing.**
 
-- Unit tests for every script: 49 tests over the shot check, cue timing, the props builder, the
-  packer, event normalization and captions.
+- Unit tests for every script: 64 tests over the shot check, cue timing, the props builder, the
+  packer, event normalization, captions, and the narration helpers (credentials, lexicon, chunking,
+  timing conversion, error rate, and the ElevenLabs requests with the network faked).
+- Qwen narration proven for real: two scenes voiced from a public reference clip, both passing the
+  pronunciation check first time, timed without a second transcription.
 - A fixture rendered through the real pipeline (`verify_shots`, `build_props`, render) to 10 seconds
   of 1080p video with audio. It is the rig phase's smoke test and a CI job.
 - The toy system: two real takes with the browser recorder, the determinism gate, and a three-pane
