@@ -17,7 +17,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from verify_shots import CUE_RE, HEADING_RE, SCENE_ID_RE
+from verify_shots import CUE_RE, HEADING_RE, HOLD_RE, SCENE_ID_RE
 
 WORD_RE = re.compile(r"[a-z0-9']+")
 SPLIT_RE = re.compile(r"(\[cue:[^\]]*\])")
@@ -30,6 +30,7 @@ class Scene:
     text: str = ""
     cues: list[tuple[str, int]] = field(default_factory=list)
     sentences: list[tuple[str, int]] = field(default_factory=list)
+    holds: list[tuple[float, int]] = field(default_factory=list)
 
 
 def _norm(w: str) -> str:
@@ -55,6 +56,9 @@ def parse_script(text: str) -> list[Scene]:
             active = bool(m)
             if m:
                 scenes.append(Scene(m.group("id"), (m.group("title") or "").strip()))
+            continue
+        if active and HOLD_RE.match(line):
+            scenes[-1].holds.append((float(HOLD_RE.match(line).group("seconds")), len(words)))
             continue
         if not active or line.lstrip().startswith(">") or not line.strip():
             continue

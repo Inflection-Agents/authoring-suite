@@ -18,7 +18,7 @@ shots:
     scene: L1
     cue: headline
     layout: title
-    slots: {text: {text: "A change that takes five minutes to make takes a week to ship"}}
+    slots: {text: {text: "A trip needs three bookings, and any one of them can fail"}}
     tags: []
 ```
 
@@ -26,6 +26,9 @@ shots:
   later; the estimate is what the runtime check uses now.
 - **`shots`** sit on one cue each. A shot runs from its cue to the next shot's cue, or to the end of the scene. The first
   shot of a scene starts at the scene's start, whatever its cue.
+- **Show the running system in `three-pane`**: the calls on the left, the workflow UI in the middle, the facts on the
+  right. One screen then carries the request, the system's own record of it and the result, which a viewer can follow
+  without being told where to look.
 - **A shot that shows a recorded window** names its `take`, and optionally `in` and `out` (events in that take; default
   `capture-start` and `capture-end`) and a `speed`. Leave `speed` out and the props builder derives it from the
   window's length and the shot's length.
@@ -34,19 +37,21 @@ shots:
 
 | Layout | Slots |
 |---|---|
-| `title` | `text: {text}` |
+| `title` | `text: {text}`, where a phrase written `~~like this~~` is struck through; optional `total: {kind: timer-total}` with the shot's `take`, showing that take's real timer total |
 | `figure` | `figure: {src: figures/<file>.svg}` |
 | `code` | `code: {kind: code, find, tokens, focus: [lines], error: {line, message}}` |
-| `three-pane` | `left: {kind: terminal}`, `center: {kind: browser, label}`, `right: {kind: facts-panel}`, optional `log: {kind: terminal}` |
+| `three-pane` | `left: {kind: terminal}`, `center: {kind: browser, label}`, `right: {kind: facts-panel}`, optional `log: {kind: terminal}`, optional `timer: {kind: timer}` |
 | `editor-build` | `code: {kind: code, tokens, edits: true}`, `terminal: {kind: terminal}`, `timer: {kind: timer}` |
 
-The terminal, facts, edits and timer are filled from the take's events by the props builder. The browser slot is
+The terminal, facts, edits, timer and timer total are filled from the take's events by the props builder. A title shot
+with a `take` but no recorded slot gets no speed or stub badge. A timer reads its marks from the whole take, so a shot
+that starts after `timer-start` shows the time already elapsed. The browser slot is
 filled with the take's recording. Nothing in a slot is typed by hand except titles, figure paths and focus lines.
 
 ## Author side versus code side
 
 On the author machine a code slot has `find` (what to show, in words) and no `tokens`. [07](07-reconcile.md) finds the
-file and lines and sets `tokens`. Takes do not exist yet either; name them (`run-1`, `run-floor`) so the driver can be
+file and lines and sets `tokens`. Takes do not exist yet either; name them (`run-1`, `run-fail`) so the driver can be
 written to produce them.
 
 ## Tags

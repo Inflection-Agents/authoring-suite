@@ -17,7 +17,7 @@ import sys
 skill = sys.argv[1]
 src = open(f"{skill}/templates/driver/driver.ts").read()
 steps = open(f"{skill}/examples/toy/steps.ts").read().split("\n", 1)[1]
-marker = "// Fill in phase 09. Each step does its calls and logs what the video should show.\nconst STEPS: Step[] = [];\n"
+marker = "const SCENARIOS: Record<string, Step[]> = {};\n"
 assert marker in src, "driver template changed; update prove.sh"
 open("demo/driver/driver.ts", "w").write(src.replace(marker, "const state: {id?: string} = {};\n" + steps))
 PY
@@ -28,7 +28,7 @@ demo/node_modules/.bin/playwright install chromium >/dev/null
 
 export STOP_CMD="pkill -f 'node $SKILL/examples/toy/server.mjs'"
 export START_CMD="nohup node $SKILL/examples/toy/server.mjs >/dev/null 2>&1 &"
-export HEALTH_URL=http://localhost:8080/health UI_ROUTE='http://localhost:8080/ui/{id}' STEP=start
+export HEALTH_URL=http://localhost:8080/health UI_ROUTE='http://localhost:8080/ui/{id}' SCENARIO=toy
 trap 'eval "$STOP_CMD" || true' EXIT
 TAKE=run-1 bash demo/capture/run-take.sh
 TAKE=run-2 bash demo/capture/run-take.sh

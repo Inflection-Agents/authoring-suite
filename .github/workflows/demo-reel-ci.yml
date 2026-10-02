@@ -33,7 +33,7 @@ jobs:
       - run: pip install -r plugins/demo-reel/skills/demo-reel/scripts/requirements.txt
       - name: Script unit tests
         working-directory: plugins/demo-reel/skills/demo-reel/scripts
-        run: python3 -m unittest test_verify_shots test_cues test_build_props test_pack test_events_and_captions -v
+        run: python3 -m unittest test_verify_shots test_cues test_holds test_build_props test_pack test_events_and_captions test_spine_titles test_timing_estimate -v
       - name: Narration unit tests (no model, no network)
         working-directory: plugins/demo-reel/skills/demo-reel/narration
         run: python3 -m unittest test_narration -v

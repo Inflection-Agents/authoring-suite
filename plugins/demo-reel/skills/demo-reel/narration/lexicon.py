@@ -1,7 +1,7 @@
 """A pronunciation lexicon applied in front of any engine.
 
 `demo/lexicon.json` maps a word to {"respell": "..."} (an "ipa" field may sit beside it for the
-record). The respelling replaces whole words only, case-sensitively, so "DTI" changes and "DTIs"
+record). The respelling replaces whole words only, case-sensitively, so "SLA" changes and "SLAs"
 does not unless the lexicon lists it.
 """
 from __future__ import annotations

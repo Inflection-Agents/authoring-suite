@@ -4,5 +4,5 @@ description: Check each draft against the checklist, then apply the owner's note
 
 Use the `demo-reel` skill and load `references/13-review.md`.
 
-Watch each cut in full, run the checklist, then show the owner. Apply each note with the re-run the reference's table
-names, and re-render.
+Run the checklist on frames from every shot, fix what fails and re-render. Then show the owner each cut and the
+ledger's Decided by the agent list, and ask for notes or a sign-off that covers publishing.

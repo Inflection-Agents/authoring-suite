@@ -22,7 +22,15 @@
 
 ## Rules
 
-- **Scene titles read top to bottom as the argument.** Run `narrative-spine`'s title check over each cut's titles.
+- **Scene titles read top to bottom as the argument.** Check each cut with narrative-spine's checker:
+
+  ```bash
+  python3 <skill>/scripts/spine_titles.py demo/narrative.md /tmp/spine
+  node <narrative-spine skill>/scripts/spine-check.mjs /tmp/spine/<cut>.md
+  ```
+
+  Fix every orphan warning, because it means a title has no connective to the one before it. Ignore "no kicker" and
+  "no Ask beat", which apply to decks.
 - **Every short-cut scene also appears in the long cut**, or has a long-cut scene that reuses the same takes.
 - **One scenario for every run.** The numbers that appear on screen are the scenario's numbers.
 - **Scene ids are letters then digits** (`L1`, `E12`), because the script and the shot list key on them.

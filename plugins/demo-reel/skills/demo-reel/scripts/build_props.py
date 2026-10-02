@@ -23,6 +23,9 @@ from pathlib import Path
 
 WIDTH, HEIGHT = 1920, 1080
 TOLERANCE = 0.10
+VISIBLE = {"request", "response", "command", "edit", "invocation", "fact", "outcome"}
+TAIL_S = 0.5
+HOLD_WARN_S = 2  # a recording held still longer than this reads as a frozen screen
 
 
 class BuildError(Exception):
@@ -66,9 +69,16 @@ def _terminal_lines(window, at):
             lines.append({"atFrame": at(e), "kind": "out", "text": f"{e['status']}  {_text(e.get('body', ''))}"})
         elif e["kind"] == "command":
             lines.append({"atFrame": at(e), "kind": "cmd", "text": e["cmd"]})
-            for out in str(e.get("out", "")).splitlines()[:12]:
+            # a command that prints nothing, such as a passing build, still shows that it finished
+            for out in (str(e.get("out", "")).splitlines() or [f"exit {e.get('exit', 0)}"])[:12]:
                 lines.append({"atFrame": at(e), "kind": "err" if e.get("exit") else "out", "text": out})
     return lines
+
+
+def _needs_window(slots: dict) -> bool:
+    """A shot needs its take's window when it shows the run itself; a title showing only the timer's total does not."""
+    return any(isinstance(v, dict) and (v.get("kind") in ("terminal", "browser", "facts-panel", "timer")
+                                        or (v.get("kind") == "code" and v.get("edits"))) for v in slots.values())
 
 
 def _shot_window(shot, events, fps, frames, problems):
@@ -79,7 +89,14 @@ def _shot_window(shot, events, fps, frames, problems):
         return None
     span = end["t"] - start["t"]
     seconds = frames / fps
+    # by log order, not by time, so an event logged just after `out` in the same millisecond stays outside
+    window = [e for e in events[events.index(start):events.index(end) + 1] if "t" in e]
     needed = span / seconds if seconds else math.inf
+    # a window a few hundredths of a second over its shot would earn a "1.1x" badge; when the overrun
+    # is under TAIL_S and the last logged event still fits, the quiet tail is cut instead
+    last = max((e["t"] for e in window if e["kind"] in VISIBLE), default=start["t"])
+    if 1 < needed and span - seconds <= TAIL_S and last - start["t"] <= seconds:
+        needed = 1.0
     speed = shot.get("speed")
     if speed is None:
         speed = max(1.0, math.ceil(needed * 10) / 10)
@@ -87,7 +104,6 @@ def _shot_window(shot, events, fps, frames, problems):
         problems.append(f"shot {shot['id']}: take {take} spans {span:g}s but the shot is {seconds:g}s; "
                         f"speed must be at least {math.ceil(needed * 10) / 10:g}")
         return None
-    window = [e for e in events if "t" in e and start["t"] <= e["t"] <= end["t"]]
     return start, end, speed, window
 
 
@@ -95,15 +111,25 @@ def _fill(shot, takes, fps, frames, problems):
     slots = {k: dict(v) if isinstance(v, dict) else v for k, v in (shot.get("slots") or {}).items()}
     badges, speed = [], 1
     take = shot.get("take")
-    if take:
-        events = takes.get(take)
-        if events is None:
-            problems.append(f"shot {shot['id']}: take {take} has no events file")
-            return slots, badges, speed
+    if take and take not in takes:
+        problems.append(f"shot {shot['id']}: take {take} has no events file")
+        return slots, badges, speed
+    for slot in slots.values():
+        if isinstance(slot, dict) and slot.get("kind") == "timer-total":
+            t0, t1 = _find(takes[take], "mark", "timer-start"), _find(takes[take], "mark", "timer-stop")
+            if t0 is None or t1 is None:
+                problems.append(f"shot {shot['id']}: timer-total needs marks timer-start and timer-stop in take {take}")
+            else:
+                slot["seconds"] = round(t1["t"] - t0["t"], 2)
+    if take and _needs_window(slots):
+        events = takes[take]
         win = _shot_window(shot, events, fps, frames, problems)
         if win is None:
             return slots, badges, speed
-        start, _, speed, window = win
+        start, stop, speed, window = win
+        # what the viewer has already seen in this take: everything logged before `out`, in log order.
+        # Facts, terminal lines and edits from before the window are on screen from the shot's first frame.
+        seen = [e for e in events[:events.index(stop) + 1] if "t" in e]
         cap = _find(events, "capture-start")
         if cap is None:
             problems.append(f"shot {shot['id']}: take {take} has no capture-start")
@@ -118,10 +144,10 @@ def _fill(shot, takes, fps, frames, problems):
                 continue
             kind = slot.get("kind")
             if kind == "terminal":
-                slot["lines"] = _terminal_lines(window, at)
+                slot["lines"] = _terminal_lines(seen, at)
             elif kind == "facts-panel":
                 slot["facts"] = [{"atFrame": at(e), "name": e["name"], "value": e["value"]}
-                                 for e in window if e["kind"] in ("fact", "outcome")]
+                                 for e in seen if e["kind"] in ("fact", "outcome")]
             elif kind == "browser":
                 rec = next((e for e in events if e["kind"] == "recording-start" and e.get("surface") == "browser"), None)
                 if rec is None:
@@ -129,11 +155,16 @@ def _fill(shot, takes, fps, frames, problems):
                     continue
                 slot["src"] = f"takes/{take}/browser.webm"
                 slot["trimBefore"] = round((start["t"] - (rec["wall"] - offset)) * fps)
+                # past the window's end the recording shows what came after `out`, so the picture holds there
+                shown = round((stop["t"] - start["t"]) / speed * fps)
+                if shown < frames:
+                    slot["freezeAt"] = shown
             elif kind == "code" and slot.get("edits"):
                 slot["edits"] = [{"atFrame": at(e), "line": e["line"], "before": e["before"], "after": e["after"]}
-                                 for e in window if e["kind"] == "edit"]
+                                 for e in seen if e["kind"] == "edit"]
             elif kind == "timer":
-                t0, t1 = _find(window, "mark", "timer-start"), _find(window, "mark", "timer-stop")
+                # marks come from the whole take, so a shot that starts mid-change keeps counting
+                t0, t1 = _find(events, "mark", "timer-start"), _find(events, "mark", "timer-stop")
                 if t0 is None or t1 is None:
                     problems.append(f"shot {shot['id']}: timer needs marks timer-start and timer-stop in take {take}")
                     continue
@@ -159,6 +190,7 @@ def build(shots: dict, timing: dict, takes: dict[str, list[dict]], cut: str) -> 
     """Props for one cut, plus warnings. Raises BuildError listing every problem found."""
     fps = int(shots.get("fps", 30))
     problems: list[str] = []
+    holds: list[str] = []
     scenes = []
     for sc in shots["scenes"]:
         if cut not in sc["cuts"]:
@@ -183,13 +215,18 @@ def build(shots: dict, timing: dict, takes: dict[str, list[dict]], cut: str) -> 
             end = starts[i + 1] if i + 1 < len(mine) else total
             frames = max(1, end - starts[i])
             slots, badges, speed = _fill(s, takes, fps, frames, problems)
+            still = [v["freezeAt"] for v in slots.values() if isinstance(v, dict) and "freezeAt" in v]
+            if still and frames - still[0] > HOLD_WARN_S * fps:
+                holds.append(f"shot {s['id']} shows {still[0] / fps:.1f}s of take {s['take']} over {frames / fps:.1f}s, "
+                             f"so its picture holds still for {(frames - still[0]) / fps:.1f}s; "
+                             "lengthen the driver's pauses there and re-record")
             placed.append({"id": s["id"], "layout": s["layout"], "from": starts[i], "durationInFrames": frames,
                            "slots": slots, "badges": badges, "speed": speed})
         scenes.append({"id": sc["id"], "title": sc["title"], "audio": f"voice/{sc['id']}.wav",
                        "durationInFrames": total, "shots": placed})
     if problems:
         raise BuildError(problems)
-    warnings = []
+    warnings = holds
     target = shots["cuts"][cut]["target_seconds"]
     seconds = sum(s["durationInFrames"] for s in scenes) / fps
     if abs(seconds - target) > TOLERANCE * target:

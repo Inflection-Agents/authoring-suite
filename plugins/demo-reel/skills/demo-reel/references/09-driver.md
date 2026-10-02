@@ -17,7 +17,8 @@ about to record, so takes never overwrite each other.
 
 ## Write the steps
 
-Fill `STEPS` in `driver.ts` with the scenario, using its helpers. Each helper logs an event the video reads:
+Fill `SCENARIOS` in `driver.ts` with one list of steps per scenario, using its helpers. `SCENARIO` picks the list and
+defaults to the take's name, so `TAKE=a SCENARIO=run-1` records a proof take of `run-1`. Each helper logs an event the video reads:
 
 | Helper | Logs | Shown as |
 |---|---|---|
@@ -42,8 +43,8 @@ Rules:
 ## Prove determinism
 
 ```bash
-TAKE=a bash demo/capture/run-take.sh
-TAKE=b bash demo/capture/run-take.sh
+TAKE=a SCENARIO=run-1 bash demo/capture/run-take.sh
+TAKE=b SCENARIO=run-1 bash demo/capture/run-take.sh
 diff <(demo/.venv/bin/python <skill>/scripts/normalize_events.py demo/takes/a/events.jsonl) \
      <(demo/.venv/bin/python <skill>/scripts/normalize_events.py demo/takes/b/events.jsonl)
 ```

@@ -9,5 +9,5 @@ shots:
     cue: run
     layout: three-pane
     take: run-1
-    slots: {left: {kind: terminal}, center: {kind: browser, label: order page}, right: {kind: facts-panel}}
+    slots: {left: {kind: terminal}, center: {kind: browser, label: booking page}, right: {kind: facts-panel}}
     tags: []

@@ -1,2 +1,2 @@
 ## T1 Watch it run
-The order starts, [cue:run] and the check approves it.
+The booking starts, [cue:run] and the hotel confirms it.

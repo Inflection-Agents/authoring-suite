@@ -3,11 +3,12 @@ export type TermLine = {atFrame: number; kind: 'cmd' | 'out' | 'err'; text: stri
 export type Edit = {atFrame: number; line: number; before: string; after: string};
 
 export type Slot = {
-  kind?: 'terminal' | 'browser' | 'facts-panel' | 'code' | 'figure' | 'timer';
+  kind?: 'terminal' | 'browser' | 'facts-panel' | 'code' | 'figure' | 'timer' | 'timer-total';
   label?: string;
   text?: string;          // title
   src?: string;           // figure image or browser recording, under public/
   trimBefore?: number;    // frames to skip at the start of a recording
+  freezeAt?: number;      // shot frame where the recording reaches its window's end and holds still
   tokens?: string;        // code tokens JSON under public/, from scripts/tokenize.mjs
   focus?: number[];       // line numbers to light; the rest dim
   error?: {line: number; message: string};

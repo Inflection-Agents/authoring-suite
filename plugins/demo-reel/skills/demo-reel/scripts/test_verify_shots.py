@@ -10,7 +10,7 @@ import verify_shots as V  # noqa: E402
 
 SCRIPT = """## L1 The promise
 > a direction note [cue:ignored]
-A change takes a week. [cue:headline] We fix it on camera. [cue:promise]
+A trip needs a booking. [cue:headline] We book it on camera. [cue:promise]
 
 ## L2 Why
 Five causes. [cue:causes]

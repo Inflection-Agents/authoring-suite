@@ -1,16 +1,16 @@
 {"t": 0.0, "wall": 1000.0, "take": "fixture", "kind": "capture-start"}
 {"wall": 999.5, "take": "fixture", "kind": "recording-start", "surface": "browser"}
-{"t": 0.2, "wall": 1000.2, "take": "fixture", "kind": "stub", "name": "payment-gateway"}
-{"t": 0.4, "wall": 1000.4, "take": "fixture", "kind": "request", "step": "start", "method": "POST", "path": "/orders/start", "body": {"total": 420}}
+{"t": 0.2, "wall": 1000.2, "take": "fixture", "kind": "stub", "name": "hotel-api"}
+{"t": 0.4, "wall": 1000.4, "take": "fixture", "kind": "request", "step": "start", "method": "POST", "path": "/bookings/start", "body": {"nights": 3}}
 {"t": 0.7, "wall": 1000.7, "take": "fixture", "kind": "response", "step": "start", "status": 200, "body": {"id": "id_1"}}
 {"t": 0.8, "wall": 1000.8, "take": "fixture", "kind": "invocation", "step": "start", "id": "id_1"}
-{"t": 1.2, "wall": 1001.2, "take": "fixture", "kind": "fact", "name": "orderTotal", "value": 420}
-{"t": 1.6, "wall": 1001.6, "take": "fixture", "kind": "outcome", "name": "order-check", "value": "APPROVED"}
+{"t": 1.2, "wall": 1001.2, "take": "fixture", "kind": "fact", "name": "nights", "value": 3}
+{"t": 1.6, "wall": 1001.6, "take": "fixture", "kind": "outcome", "name": "booking", "value": "CONFIRMED"}
 {"t": 2.0, "wall": 1002.0, "take": "fixture", "kind": "mark", "name": "run-done"}
 {"t": 2.0, "wall": 1002.0, "take": "fixture", "kind": "mark", "name": "timer-start"}
-{"t": 2.3, "wall": 1002.3, "take": "fixture", "kind": "edit", "step": "edit", "file": "rule.ts", "line": 9, "before": "export const ORDER_LIMIT = 500;", "after": "export const ORDER_LIMIT = 450;"}
-{"t": 2.8, "wall": 1002.8, "take": "fixture", "kind": "command", "step": "build", "cmd": "npm run build", "exit": 0, "out": "built and signed"}
-{"t": 3.4, "wall": 1003.4, "take": "fixture", "kind": "request", "step": "rerun", "method": "POST", "path": "/orders/start", "body": {"total": 470}}
-{"t": 3.6, "wall": 1003.6, "take": "fixture", "kind": "response", "step": "rerun", "status": 200, "body": {"outcome": "MANUAL_CHECK"}}
+{"t": 2.3, "wall": 1002.3, "take": "fixture", "kind": "edit", "step": "edit", "file": "booking.ts", "line": 9, "before": "export const HOLD_MINUTES = 15;", "after": "export const HOLD_MINUTES = 20;"}
+{"t": 2.8, "wall": 1002.8, "take": "fixture", "kind": "command", "step": "build", "cmd": "npm run build", "exit": 0, "out": "built"}
+{"t": 3.4, "wall": 1003.4, "take": "fixture", "kind": "request", "step": "rerun", "method": "POST", "path": "/bookings/start", "body": {"nights": 3}}
+{"t": 3.6, "wall": 1003.6, "take": "fixture", "kind": "response", "step": "rerun", "status": 200, "body": {"outcome": "CONFIRMED", "holdMinutes": 20}}
 {"t": 3.8, "wall": 1003.8, "take": "fixture", "kind": "mark", "name": "timer-stop"}
 {"t": 4.0, "wall": 1004.0, "take": "fixture", "kind": "capture-end"}

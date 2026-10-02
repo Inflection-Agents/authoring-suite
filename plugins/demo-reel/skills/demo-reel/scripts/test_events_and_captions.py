@@ -15,7 +15,7 @@ def run(id_, t0):
         {"wall": 99.0, "kind": "recording-start", "surface": "browser"},
         {"t": t0 + 1, "wall": 101 + t0, "kind": "response", "status": 200, "body": {"invocationId": id_}},
         {"t": t0 + 1.1, "wall": 101.1 + t0, "kind": "invocation", "id": id_},
-        {"t": t0 + 2, "wall": 102 + t0, "kind": "request", "method": "POST", "path": f"/approve/{id_}"},
+        {"t": t0 + 2, "wall": 102 + t0, "kind": "request", "method": "POST", "path": f"/confirm/{id_}"},
     ]
 
 
@@ -25,7 +25,7 @@ class Normalize(unittest.TestCase):
 
     def test_ids_replaced_in_bodies_and_paths(self):
         lines = N.normalize(run("inv_a1", 0.0))
-        self.assertIn('"/approve/<id-1>"', lines[-1])
+        self.assertIn('"/confirm/<id-1>"', lines[-1])
         self.assertIn('"invocationId": "<id-1>"', lines[1])
 
     def test_real_difference_still_shows(self):

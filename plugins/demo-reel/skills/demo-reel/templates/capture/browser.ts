@@ -1,6 +1,6 @@
 // Records the workflow UI while the driver runs a take. Copy to demo/capture/browser.ts and run it
 // before the driver (run-take.sh does both):
-//   TAKE=run-1 UI_ROUTE='http://localhost:<UI_PORT>/<route>/{id}' STEP=start demo/node_modules/.bin/tsx demo/capture/browser.ts
+//   TAKE=run-1 UI_ROUTE='http://localhost:<UI_PORT>/<route>/{id}' [STEP=<driver step>] demo/node_modules/.bin/tsx demo/capture/browser.ts
 // It logs `recording-start` with the wall clock the moment recording begins, so build_props can trim
 // the video to the take's window. It records at the three-pane centre slot's exact size, so the
 // video is never scaled. Find the real UI_ROUTE in phase 07.
@@ -26,13 +26,15 @@ const page = await context.newPage();
 appendFileSync(EVENTS, JSON.stringify({wall: Date.now() / 1000, take, kind: 'recording-start', surface: 'browser'}) + '\n');
 await page.goto(route.includes('{id}') ? 'about:blank' : route || 'about:blank');
 
-let navigated = false;
+// The page follows the newest invocation the driver logs (only STEP's, when STEP is set), so a take
+// with two requests shows each one's page in turn.
+let shown = '';
 for (;;) {
   const events = read();
-  const inv = events.find((e) => e.kind === 'invocation' && (!step || e.step === step));
-  if (inv && !navigated && route.includes('{id}')) {
-    await page.goto(route.replace('{id}', String(inv.id)));
-    navigated = true;
+  const inv = events.filter((e) => e.kind === 'invocation' && (!step || e.step === step)).pop();
+  if (inv && String(inv.id) !== shown && route.includes('{id}')) {
+    shown = String(inv.id);
+    await page.goto(route.replace('{id}', shown));
   }
   if (events.some((e) => e.kind === 'capture-end')) break;
   await page.waitForTimeout(200);

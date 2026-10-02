@@ -1,8 +1,8 @@
 # 13 Review
 
-**Goal.** Catch what the checks cannot, before the owner watches, then apply the owner's notes.
+**Goal.** Catch what the checks cannot and fix it, show the owner the cuts once, then apply the owner's notes.
 **Produces.** A checked draft per cut and the owner's notes, applied and re-rendered.
-**Gate.** The owner signs off.
+**Gate.** The owner signs off. The sign-off covers publishing too, so [14](14-deliver.md) needs no second ask.
 
 ## The checklist
 
@@ -16,6 +16,14 @@ Watch each draft in full, then check:
 5. **The timer** stops at its real total and holds there.
 6. **Runtime.** Each cut is within 10% of its target.
 7. **Honesty of the climax.** What the narration claims happened is what the events show happened.
+
+Fix every failed item, re-render, and check again before the owner sees anything. Look at frames from the middle and
+the end of every shot, because a pane that empties at a cut inside one take, or a line edited too early, shows there.
+
+## The final watch
+
+Show the owner each cut with its length against target, then the ledger's Decided by the agent list, then anything
+the checklist could not settle. Ask for notes or a sign-off in one message.
 
 ## The owner's notes
 
