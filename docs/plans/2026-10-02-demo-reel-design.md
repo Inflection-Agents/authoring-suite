@@ -156,11 +156,13 @@ window's start, converted to driver time through `capture-start`, so every pane 
 
 **Testing.**
 
-- Unit tests for every script: 64 tests over the shot check, cue timing, the props builder, the
+- Unit tests for every script: 65 tests over the shot check, cue timing, the props builder, the
   packer, event normalization, captions, and the narration helpers (credentials, lexicon, chunking,
   timing conversion, error rate, and the ElevenLabs requests with the network faked).
 - Qwen narration proven for real: two scenes voiced from a public reference clip, both passing the
   pronunciation check first time, timed without a second transcription.
+- ElevenLabs proven against the live API: the same two scenes voiced with a premade voice, timed
+  from its own character timings, and transcribed back by Whisper with a word error rate of 0.0.
 - A fixture rendered through the real pipeline (`verify_shots`, `build_props`, render) to 10 seconds
   of 1080p video with audio. It is the rig phase's smoke test and a CI job.
 - The toy system: two real takes with the browser recorder, the determinism gate, and a three-pane
