@@ -1,7 +1,7 @@
 # demo-reel design
 
 Date: 2026-10-02
-Status: approved sections 1-3
+Status: approved sections 1-3; revised to v2 the same day after four adversarial reviews (PR #12)
 
 ## Problem
 
@@ -14,24 +14,32 @@ completion on a machine the author may never see.
 ## Decision log
 
 - Audience: two cuts from one set of recordings (choice D). A short cut for leadership, a long cut
-  for engineers. Every short-cut shot is also a long-cut shot; the long cut only adds depth.
+  for engineers. Recordings are shared between cuts; narration is not. A scene the short cut needs
+  shorter is a separate scene with its own narration that reuses the same takes.
 - Climax: one payoff beat, with up to two supporting beats and an optional extra in the long cut.
 - Code on screen: only the code that carries the design. The short cut shows only code that is also
   configuration.
-- Voice: pluggable narration engine. The first engagement uses the owner's cloned voice through
-  `voice-lab`, generated on the target machine (choice B).
-- Two machines: the author machine holds the context; the target machine holds the code. The
-  author-side kit travels as a zip. Client material never enters this repository.
-- Target machine has open internet (choice A): every tool installs normally.
+- Voice: pluggable narration engine: a local cloned voice, a cloud voice or a human recording.
+- Machines: the interview, narrative, script and shot list are written where the context is, and
+  capture, narration and composition run next to the code. A kit zip carries one half to the other.
+  When the whole engagement runs on one machine, including draft review, the pack step is skipped and
+  later author-side edits happen in place.
 - Build approach: everything composed in code (approach 1), borrowing proven patterns from the
   open-source `claude-code-video-toolkit` without forking it. Live recording from a runbook survives
   only as a per-shot fallback (`capture: manual`).
+- v2, owner ruling: the terminal pane is drawn from the event log, not recorded. The driver also runs
+  the live edit, the build and the re-run, so the editor pane is drawn from events too. A browser
+  recording of the workflow UI is the only surface captured as video. VHS leaves the toolchain.
+- v2, owner ruling: the climax timer runs between two marks the driver logs, `timer-start` just before
+  the edit and `timer-stop` when the re-run's outcome arrives. It can never show time that did not pass.
+- v2: the shot list stays YAML for readability, so the engagement-time scripts use PyYAML. The
+  repository's gates stay standard-library only; the unit tests do not import YAML.
 - Plugin name: `demo-reel`.
 
-## Section 1: Narrative (approved)
+## Section 1: Narrative
 
-The narrative is engagement-specific and lives in the engagement's own kit, not in this plugin. The
-plugin encodes its shape:
+The narrative is engagement-specific and lives in the engagement's own folder, not in this plugin.
+The plugin encodes its shape:
 
 - **The hook is a promise.** Open on the problem the work solves and promise to fix it on camera.
   Every scene earns the promise; the climax keeps it with real evidence on screen, such as a timer.
@@ -40,75 +48,103 @@ plugin encodes its shape:
 - **Scene tables per cut,** each row with a time range, the scene's spine sentence, what is on
   screen, and what the narration says. Scene titles read top to bottom as the argument
   (`narrative-spine`).
-- **Honesty rules,** enforced by the shot list and the review checklist: every speed-up shows its
-  factor, every stubbed dependency carries a "stub" tag, anything not built is labelled "design",
-  and every number on screen comes from the demo driver's event log.
+- **Honesty rules,** enforced in code where possible: every speed-up shows its factor (computed, never
+  typed); every stubbed dependency the driver declares shows a "stub" badge; anything not built is
+  labelled "design"; every number on screen comes from a take's event log; the timer shows only real
+  elapsed time between its marks.
 
-## Section 2: The plugin (approved)
+## Section 2: The plugin
 
 `demo-reel` has the same shape as `arch-docs`. It has one skill with a reference per phase, a command
-per phase, a ledger on disk, and gates that advise rather than block. It delegates: `narrative-spine` for the
-scene spine, `writing-voice` for the voiceover script and its lint, `diagram-design` for any new
-figure.
+per phase, a ledger at `demo/_brief/engagement.md`, and gates that advise rather than block. Its
+runtime files live inside the skill (`skills/demo-reel/scripts`, `remotion`, `templates`,
+`examples`), as every other plugin's do. It delegates: `narrative-spine` for the scene spine,
+`writing-voice` for the voiceover script and its lint, `diagram-design` for any new figure.
 
-| Phase | Machine | Produces | Gate |
+| Phase | Where | Produces | Gate |
 |---|---|---|---|
-| 01 Kickoff | author | playback of the job: subject, audience, cuts, constraints | owner corrects the playback |
-| 02 Interview | author | answers from a question bank: audience and cuts, what is live, climax, code items, scenario, voice, honesty rules | nothing left that would change a scene |
+| 01 Kickoff | author | playback of the job: subject, audience, cuts, machines | owner corrects the playback |
+| 02 Interview | author | answers from a question bank | nothing left that would change a scene |
 | 03 Narrative | author | `narrative.md`: promise, scenario, scene table per cut | owner approves |
 | 04 Script | author | `script.md`: voiceover with `[cue:...]` markers | voice lint clean, owner approves |
-| 05 Shot list | author | `shots.yaml`: per shot the cuts, layout, sources, cues, tags. Code shots carry intent, not location | every scene has shots, every cue has a shot |
-| 06 Pack | author | `kit.zip`, size-checked | under the transfer limit |
-| 07 Reconcile | target | code shots resolved to file and lines, scenario checked against a real run, numbered disagreements | owner rules on each |
-| 08 Rig | target | every tool installed and proven by a smoke render | all green |
-| 09 Driver | target | demo driver and reset script; each run writes `events.jsonl` | two consecutive runs give the same events, apart from times and IDs |
-| 10 Capture | target | one agent per surface: browser, terminal, code scenes, figures, editor | each asset plays and matches its shot |
-| 11 Voice | target | narration per scene, word timestamps into `timing.json` | QC passes or failures are listed |
-| 12 Compose | target | a Remotion composition per cut, draft render | it renders |
-| 13 Review | target | checklist pass (pacing, legibility at 1080p, honesty tags, every cut tied to a sentence), then owner notes | owner signs off |
-| 14 Deliver | target | final MP4s, SRT captions, a thumbnail per cut | |
+| 05 Shot list | author | `shots.yaml`: scenes per cut, shots per cue | `verify_shots.py` reports 0 problems |
+| 06 Pack | author | `demo-kit.zip`, size-checked; skipped on one machine | under the transfer limit |
+| 07 Reconcile | target | code shots resolved to tokens files, scenario checked against a real run, UI route found, numbered disagreements | owner rules on each |
+| 08 Rig | target | every tool installed and proven by the fixture render and the toy take | all green |
+| 09 Driver | target | demo driver, reset script, one events file per take | two takes normalize identically |
+| 10 Capture | target | one take per shot-list `take`, each with its events and browser recording | every take present, every shot's window fits |
+| 11 Voice | target | narration per scene, `timing.json` with cue and sentence times | QC passes or failures are listed |
+| 12 Compose | target | `props-<cut>.json` from `build_props.py`, a draft render per cut | builds with 0 problems, renders |
+| 13 Review | target | checklist pass, then owner notes, applied and re-rendered | owner signs off |
+| 14 Deliver | target | final MP4s, SRT captions, a thumbnail per cut, a hand-back note | |
 
-The ledger travels in the kit, so the target machine starts at phase 07.
+**Shipped inside the skill:**
 
-**Shipped inside the plugin,** so each engagement does not rebuild the machinery:
+- A Remotion starter with five layouts: `title`, `figure`, `code` (focus and dim, error callout,
+  edits retyped on the take's clock), `three-pane` (terminal drawn from events, browser recording in a
+  fixed 820 by 1000 slot, facts panel, optional log strip drawn from events), and `editor-build`
+  (code pane with the live edit, build and re-run output drawn from events, the timer). Badges come
+  from computed speed, driver stub events and the `design` tag.
+- Templates: a capture `package.json` (ES module, pinned `tsx` and `playwright`), the driver with
+  helpers for calls, commands, edits, marks, stubs, facts and outcomes, a per-take reset script, the
+  browser recorder, and a take runner.
+- A toy system (`examples/toy/`) that the rig phase and CI use to prove the whole capture chain.
+- The agent kernel from `arch-docs` plus one rule, and a `failure-modes.md` that grows per engagement.
 
-- A Remotion starter project with five layouts: full-screen figure; code pane (focus and dim,
-  magic-move between versions, error callouts); three-pane run (terminal, browser, facts panel,
-  optional log strip); editor beside terminal with a timer; title card. Plus badges for speed
-  factor, "stub" and "design".
-- Templates: a demo-driver skeleton writing `events.jsonl`; a VHS tape generator reading events; a
-  Playwright capture script that opens a workflow UI at an ID from the events; a timing script that
-  maps narration audio to cue timestamps.
-- The agent kernel from `arch-docs`, and a `failure-modes.md` that grows per engagement.
+**Kept out:** anything specific to a client or a stack. A workflow engine's UI is one browser source
+among others. Example names in the plugin are neutral (`orders`, `orderTotal`, `payment-gateway`).
 
-**Kept out:** anything specific to a client or a stack. A workflow engine's UI is one browser
-source among others. The narration engine sits behind an interface with three implementations
-named: a local cloned voice, a cloud voice, a human recording.
+## Section 3: Data flow, failure handling, testing
 
-## Section 3: Data flow, failure handling, testing (approved)
+**Four files carry the pipeline.**
 
-**Three files carry the pipeline.**
+- `shots.yaml`: scenes (with their cuts and estimated durations) and shots (each on one cue). A shot
+  that shows a recording names its `take`, and optionally `in` and `out` marks (default
+  `capture-start` and `capture-end`) and a `speed`. A code slot carries `find` on the author side;
+  reconcile fills `tokens`.
+- `demo/takes/<take>/events.jsonl`: one file per take. The driver writes `t` (seconds since it
+  started) and `wall` (Unix seconds) on every event: `capture-start`, `capture-end`, `request`,
+  `response`, `command`, `edit`, `invocation`, `fact`, `outcome`, `stub`, `mark`. The browser recorder
+  adds `recording-start` with `wall` only.
+- `timing.json`: per scene, the audio's duration, each cue's second, and each sentence's start.
+- `props-<cut>.json`: built by `build_props.py`, read by Remotion. Nothing else feeds the render.
 
-- `shots.yaml`, written on the author machine and completed on the target. A code shot carries
-  `find` (intent) on the author side; reconcile fills `file` and `lines`.
-- `events.jsonl`, written by the demo driver on every run: one line per event with time, kind, run,
-  invocation ID, step and payload. Every recorder and every on-screen panel reads it.
-- `timing.json`, from the voice phase: each `[cue:...]` marker mapped to a second in the audio. The
-  composition places each shot at its cue, so editing a narration line re-times the video.
+**The clocks.** A shot shows its take's window between `in` and `out`. Its speed is the window's
+length over the shot's length, rounded up to one decimal and never below 1; a speed given in the shot
+list that is too low to fit the window is an error. Every event lands at `(t - in) / speed` seconds
+into the shot. The browser recording is trimmed by the gap between its `recording-start` and the
+window's start, converted to driver time through `capture-start`, so every pane shows the same moment.
 
-**Failure handling.**
+**What re-times and what does not.**
 
+| Change | Re-run |
+|---|---|
+| A narration line | voice that scene, `timing.py`, `build_props.py`, render |
+| A cue moved within a scene | `timing.py`, `build_props.py`, render |
+| A shot's layout, slot or `in`/`out` | `build_props.py`, render |
+| The scenario or the driver | every take that uses it, then `build_props.py`, render |
+| Code shown on screen | reconcile's tokens for that file, render |
+| The workflow UI | every take with a browser slot |
+
+**Failure handling.** Every check reports all problems at once and writes nothing on failure.
+
+- `verify_shots.py` rejects headings without a scene id, malformed or duplicate cue ids, cues
+  without shots, shots on cues the script lacks, scenes without shots or script sections, unknown
+  cuts and scenes, non-positive speeds, and estimated runtimes more than 10% off target.
+- `build_props.py` rejects missing takes, missing marks, windows that cannot fit at the given speed,
+  browser slots without a `recording-start`, timers without both marks, cues missing from the timing,
+  and two shots on one frame. It warns when a cut's real runtime is more than 10% off target.
+- The driver gate: two takes of the same scenario, run through `normalize_events.py`, must be
+  identical. It drops times and take names, and replaces every invocation ID wherever it appears.
+- `pack.py` skips symbolic links, junk folders and earlier zips, and writes nothing when over the limit.
 - A surface that cannot be scripted is marked `capture: manual` and gets a runbook entry.
-- Kit and code disagree: reconcile lists the disagreements, numbered; the owner rules on each.
-- A non-repeatable run fails the driver gate; the reset script restores a clean state before each
-  take.
-- Voice QC failures are listed with the failing word; a lexicon entry fixes the pronunciation.
-- An oversized kit: pack lists the largest files and proposes compression before zipping.
 
 **Testing.**
 
-- `verify-shots.py`: every script cue has a shot, every shot has a scene and a cut, each cut's
-  runtime is within 10% of its target, every stub source carries a `stub` tag.
-- A fixture demo in the plugin (fake events, short timing, two shots) that the Remotion starter must
-  render to a 5-second MP4. It is also the rig phase's smoke test and can run in CI.
-- `scripts/verify-skill-frontmatter.py` covers the new skill.
+- Unit tests for every script: 49 tests over the shot check, cue timing, the props builder, the
+  packer, event normalization and captions.
+- A fixture rendered through the real pipeline (`verify_shots`, `build_props`, render) to 10 seconds
+  of 1080p video with audio. It is the rig phase's smoke test and a CI job.
+- The toy system: two real takes with the browser recorder, the determinism gate, and a three-pane
+  render, run in the rig phase and in CI.
+- `scripts/verify-skill-frontmatter.py` (via the existing `skills-frontmatter` workflow) covers the skill.
