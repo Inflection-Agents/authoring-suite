@@ -1,0 +1,70 @@
+name: demo-reel CI
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'plugins/demo-reel/**', '.github/workflows/demo-reel-ci.yml' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'plugins/demo-reel/**', '.github/workflows/demo-reel-ci.yml' ]
+
+permissions:
+  contents: read
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: "1"
+
+jobs:
+  scripts:
+    name: Unit tests and package validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        python-version: [ "3.11", "3.12" ]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -r plugins/demo-reel/skills/demo-reel/scripts/requirements.txt
+      - name: Script unit tests
+        working-directory: plugins/demo-reel/skills/demo-reel/scripts
+        run: python3 -m unittest test_verify_shots test_cues test_build_props test_pack test_events_and_captions -v
+      - name: Narration unit tests (no model, no network)
+        working-directory: plugins/demo-reel/skills/demo-reel/narration
+        run: python3 -m unittest test_narration -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate the plugin package
+        working-directory: plugins/demo-reel
+        run: npx --yes @anthropic-ai/claude-code@2.1.229 plugin validate . --strict
+
+  render:
+    name: Fixture render and toy proof
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: pip install -r plugins/demo-reel/skills/demo-reel/scripts/requirements.txt
+      - name: Browser system libraries for Remotion and Playwright
+        run: npx --yes playwright@1.63.0 install-deps chromium
+      - run: npm ci
+        working-directory: plugins/demo-reel/skills/demo-reel/remotion
+      - name: Fixture through the pipeline
+        run: python3 plugins/demo-reel/skills/demo-reel/scripts/test_fixture_render.py
+      - name: Toy system, two takes, determinism, render
+        run: bash plugins/demo-reel/skills/demo-reel/examples/toy/prove.sh "$RUNNER_TEMP/toy"
