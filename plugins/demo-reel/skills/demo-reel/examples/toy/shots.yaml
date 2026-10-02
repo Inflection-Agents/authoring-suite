@@ -1,0 +1,13 @@
+fps: 30
+cuts:
+  toy: {target_seconds: 4}
+scenes:
+  - {id: T1, title: Watch it run, cuts: [toy], duration: 4}
+shots:
+  - id: T1.1
+    scene: T1
+    cue: run
+    layout: three-pane
+    take: run-1
+    slots: {left: {kind: terminal}, center: {kind: browser, label: order page}, right: {kind: facts-panel}}
+    tags: []
