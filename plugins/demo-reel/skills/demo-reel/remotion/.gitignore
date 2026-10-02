@@ -1,0 +1,6 @@
+node_modules/
+out/
+public/takes/
+public/voice/
+fixtures/props.json
+props-*.json

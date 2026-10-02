@@ -1,0 +1,13 @@
+{
+  "name": "demo-reel",
+  "description": "Produce a narrated demo video of working software, from the first interview to two finished cuts. Every pane is driven by the scenario's own event log, so the video can be re-cut and never shows a number that did not happen.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Inflection Agents",
+    "url": "https://github.com/Inflection-Agents"
+  },
+  "homepage": "https://github.com/Inflection-Agents/authoring-suite/tree/main/plugins/demo-reel",
+  "repository": "https://github.com/Inflection-Agents/authoring-suite",
+  "license": "MIT",
+  "keywords": ["demo", "video", "screencast", "remotion", "narration", "interview", "process"]
+}

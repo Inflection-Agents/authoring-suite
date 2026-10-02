@@ -1,6 +1,6 @@
 # Authoring Suite
 
-Five skills for one job: making a claim land, on a slide, in a paragraph, or in the picture
+Six skills for one job: making a claim land, on a slide, in a paragraph, or in the picture
 next to either.
 
 | Skill | Answers |
@@ -10,8 +10,9 @@ next to either.
 | [`writing-voice`](plugins/writing-voice) | Does the prose sound like it, or like an LLM wrote it? |
 | [`arch-docs`](plugins/arch-docs) | What order do I do a whole architecture documentation engagement in? |
 | [`muse-white-paper`](plugins/muse-white-paper) | Does the white paper read like the author, inside its budgets? |
+| [`demo-reel`](plugins/demo-reel) | How do we show this working, on video, without it looking hard? |
 
-All five live in this repo as independently installable plugins under one marketplace.
+All six live in this repo as independently installable plugins under one marketplace.
 `diagram-design` was previously its own repo (`Inflection-Agents/diagram-design`, now
 archived); this repo carries it forward as a fresh copy, not a history merge, so the pre-2026-08
 commit-by-commit build trail lives in the archived repo, not here.
@@ -25,6 +26,7 @@ commit-by-commit build trail lives in the archived repo, not here.
 /plugin install diagram-design@authoring-suite
 /plugin install arch-docs@authoring-suite
 /plugin install muse-white-paper@authoring-suite
+/plugin install demo-reel@authoring-suite
 ```
 
 ## Editable install
@@ -40,6 +42,7 @@ ln -s ~/code/authoring-suite/plugins/narrative-spine/skills/narrative-spine ~/.c
 ln -s ~/code/authoring-suite/plugins/writing-voice/skills/writing-voice ~/.claude/skills/writing-voice
 ln -s ~/code/authoring-suite/plugins/arch-docs/skills/arch-docs ~/.claude/skills/arch-docs
 ln -s ~/code/authoring-suite/plugins/muse-white-paper/skills/muse-white-paper ~/.claude/skills/muse-white-paper
+ln -s ~/code/authoring-suite/plugins/demo-reel/skills/demo-reel ~/.claude/skills/demo-reel
 ```
 
 ## How they compose
@@ -57,6 +60,11 @@ rather than one picture.
 `muse-white-paper` writes the paper itself. It takes an approved spine, holds the author's voice
 through a voice sheet and stored edit pairs, and keeps the result inside word and figure-area
 budgets. It reads the same voice rules `writing-voice` owns.
+
+`demo-reel` turns the paper's idea into a narrated video of the system running. It interviews the
+owner, writes the narrative and a voiceover script, and then drives the capture and composition
+next to the code, with every pane fed by the scenario's own event log. It calls `narrative-spine`
+for the scene spine and `writing-voice` for the voiceover.
 
 ## diagram-design's own CI
 

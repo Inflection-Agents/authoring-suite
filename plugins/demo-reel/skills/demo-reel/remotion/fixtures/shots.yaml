@@ -1,0 +1,30 @@
+fps: 30
+cuts:
+  fixture: {target_seconds: 10}
+scenes:
+  - {id: F1, title: Fixture, cuts: [fixture], duration: 10}
+shots:
+  - {id: F1.1, scene: F1, cue: title, layout: title, slots: {text: {text: "A change that takes five minutes"}}, tags: []}
+  - {id: F1.2, scene: F1, cue: figure, layout: figure, slots: {figure: {src: fixture/figure.svg}}, tags: [design]}
+  - id: F1.3
+    scene: F1
+    cue: code
+    layout: code
+    slots: {code: {kind: code, tokens: fixture/rule.tokens.json, focus: [3, 4], error: {line: 4, message: "TS2339: Property 'totl' does not exist"}}}
+    tags: []
+  - id: F1.4
+    scene: F1
+    cue: run
+    layout: three-pane
+    take: fixture
+    out: run-done
+    slots: {left: {kind: terminal}, center: {kind: browser, label: workflow ui}, right: {kind: facts-panel}}
+    tags: []
+  - id: F1.5
+    scene: F1
+    cue: change
+    layout: editor-build
+    take: fixture
+    in: timer-start
+    slots: {code: {kind: code, tokens: fixture/rule.tokens.json, edits: true}, terminal: {kind: terminal}, timer: {kind: timer}}
+    tags: []
